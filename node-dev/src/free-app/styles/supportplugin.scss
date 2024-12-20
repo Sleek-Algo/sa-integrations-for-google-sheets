@@ -1,0 +1,87 @@
+.saifgs-pro-card {
+    border: 1px solid #e5e7eb;
+    border-radius: 8px !important;
+    .saifgs-pro-card-body {
+        padding-inline: 0;
+        padding-block: 0;
+    }
+    .saifgs-main {
+        display: flex;
+        flex-direction: column;
+        justify-content: space-evenly;
+        height: 100%;
+        h4 {
+            font-size: 1.25rem;
+        }
+        p {
+            font-size: 14px;
+            line-height: 1.6;
+        }
+        .learn-more {
+            color: rgb(79 70 229);
+            font-weight: 400;
+            display: flex;
+            gap: 0 10px;
+            align-items: center;
+            width: 100%;
+        }
+        .img-h {
+            width: 100%;
+            height: 120px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            background-color: rgb(241 245 249);
+            border-top-right-radius: 8px;
+            border-top-left-radius: 8px;
+            .new-log {
+                display: inline-flex;
+                font-size: .75rem;
+                font-weight: 500;
+                line-height: 1.25;
+                padding: .125rem .5rem;
+                vertical-align: middle;
+                white-space: nowrap;
+                background-color: rgb(219 234 254);
+                border-radius: 9999px;
+                align-items: center;
+                position: absolute;
+                top: 10px;
+                right: 10px;
+            }
+            img {
+                width: 50%;
+                object-fit: contain;
+                text-align: center;
+            }
+        }
+        .first-content {
+            display: flex;
+            flex-direction: column;
+            justify-content: flex-start;
+            align-items: flex-start;
+            padding: 20px;
+            flex-grow: 1;
+        }
+        .last-content {
+            display: flex;
+            flex-direction: row;
+            justify-content: space-between;
+            align-items: center;
+            padding: 0 20px 20px;
+        }
+         :where(.css-dev-only-do-not-override-bmq84s).saifgs-divider-horizontal {
+            margin: 15px auto;
+            display: block;
+            width: 90% !important;
+            min-width: initial !important;
+        }
+    }
+    .saifgs-switch-inner {
+        margin-top: -2px !important;
+    }
+}
+
+#saifgs-app .saifgs-app-content-wrapper {
+    margin-bottom: 20px;
+}

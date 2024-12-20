@@ -1,0 +1,19 @@
+:where(.saifgs-segmentedj) .saifgs-segmented-item-label {
+    min-height: 32px;
+    line-height: 28px;
+    padding: 1px 11px;
+    overflow: hidden;
+    white-space: nowrap;
+    text-overflow: ellipsis;
+    width: 90px;
+}
+
+#rc-tabs-0-panel-1 .saifgs-form-item-row {
+    align-items: flex-start;
+}
+
+@media only screen and (max-width: 1199.5px) {
+    .saifgs_activation_key_style {
+        margin-left: 0;
+    }
+}

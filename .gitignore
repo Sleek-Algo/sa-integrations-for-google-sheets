@@ -1,0 +1,6 @@
+# include everything except following specific files and folders
+
+.idea
+composer.lock
+node-dev/node_modules/
+node-dev/package-lock.json

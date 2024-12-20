@@ -1,0 +1,43 @@
+#saifgs-app-main {
+    .saifgs-app-header {
+        padding-left: 15px;
+        background-color: #ffffff;
+        box-shadow: 0 1px 0 rgba(213, 213, 213, 0.5), 0 1px 2px #eee;
+    }
+    .saifgs-support {
+        display: flex;
+        flex-direction: row;
+        justify-content: center;
+        gap: 20px;
+        font-size: 20px;
+    }
+    .saifgs-app-logo {
+        display: flex;
+        flex-direction: row;
+        justify-content: space-between;
+        align-items: center;
+        h1 {
+            line-height: 2rem;
+        }
+    }
+    a {
+        text-decoration: none;
+    }
+    .saifgs-version {
+        font-size: 14px;
+        display: inline-block;
+        padding-left: 5px;
+    }
+    .saifgs-support {
+        display: flex;
+        gap: 20px;
+    }
+}
+
+@media only screen and (max-width: 991.5px) {
+    #saifgs-app-main .saifgs-app-logo {
+        flex-direction: column;
+        align-items: flex-start;
+        justify-content: flex-start;
+    }
+}

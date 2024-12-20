@@ -1,0 +1,123 @@
+.saifgs-form {
+    background-color: #f0f0f1;
+    padding: 25px 25px 30px;
+     :where(.css-dev-only-do-not-override-1wh6zti).saifgs-select-single {
+        height: 40px;
+    }
+     :where(.css-dev-only-do-not-override-1wh6zti).saifgs-form-item .saifgs-form-item-label>label {
+        width: 250px;
+    }
+    .saifgs-pro-card {
+        margin-bottom: 20px;
+    }
+}
+
+// Edit Integration
+.edit-google-sheet {
+    label {
+        // min-width: 200px;
+        max-width: 170px;
+        width: 100%;
+    }
+    // .saifgs-select-single {
+    //     height: 40px;
+    // }
+    // .saifgs-form-item .saifgs-form-item-control-input {
+    //     min-height: 40px;
+    // }
+    // .saifgs-segmented .saifgs-segmented-item-label {
+    //     min-height: 40px;
+    //     line-height: 40px;
+    // }
+}
+
+// Sourcedata
+.edit-form-data {
+    form {
+        background-color: #fff !important;
+    }
+    .saifgs-modal-body {
+        padding: 20px;
+        background-color: #f0f0f1;
+    }
+}
+
+.edit-form-data .saifgs-modal-body {
+    background-color: #f0f0f1;
+    padding: 20px;
+}
+
+// saifgs-new-intermigration Add New
+.saifgs-disbale-mapping-btn {
+    label{
+        width: 200px;
+    }
+
+}
+
+.saifgs-modal-root .edit-form-data .saifgs-modal-body .saifgs-form {
+    padding: 15px 5px 10px !important;
+}
+
+@media only screen and (max-width: 1506.5px) {
+    .edit-google-sheet .saifgs-segmented-item {
+        // min-width: 200px !important;
+    }
+}
+
+@media only screen and (max-width: 1216.5px) {
+    .edit-google-sheet .saifgs-segmented-item {
+        // min-width: 150px !important;
+    }
+    #saifgs_source_plugin {
+        width: 100% !important;
+        overflow: auto;
+    }
+}
+
+@media only screen and (max-width: 1060.5px) {
+    .googlesheet .saifgs-col {
+        width: auto;
+        max-width: none !important;
+    }
+}
+
+.saifgs-col.saifgs-form-item-label {
+    flex: 0 0 auto !important;
+}
+
+.saifgs-form-item-row {
+    align-items: center;
+}
+
+form#saifgs-new-intermigration {
+    padding: 10px 14px 0 !important;
+    border-radius: 10px;
+    .saifgs-pro-card {
+        margin-bottom: 12px !important;
+    }
+}
+
+@media only screen and (max-width: 767.5px) {
+    .saifgs-picker {
+        height: 49px;
+    }
+    .googlesheet .saifgs-pro-table-list-toolbar-right {
+        margin-right: 20px;
+    }
+    .saifgs-pro-table-list-toolbar-container {
+        width: 100%;
+        overflow: hidden;
+    }
+    #saifgs-new-intermigration {
+        label {
+            width: 100%;
+        }
+        .saifgs-select-single {
+            height: 45px;
+        }
+        .saifgs-row {
+            align-items: center;
+        }
+    }
+}

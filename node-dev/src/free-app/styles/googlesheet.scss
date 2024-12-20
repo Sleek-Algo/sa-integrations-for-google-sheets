@@ -1,0 +1,138 @@
+.googlesheet {
+    .saifgs-form {
+        padding: 25px;
+    }
+    .saifgs-modal-wrap {
+        z-index: 4 !important;
+    }
+    #adminmenuwrap {
+        z-index: 1;
+    }
+    .saifgs-modal-root .saifgs-modal-mask {
+        background-color: transparent !important;
+    }
+    .saifgs-pro-table-list-toolbar-right {
+        padding-right: 20px
+    }
+    .saifgs-table-content {
+        width: 100%;
+        overflow-x: auto;
+    }
+    th.saifgs-table-cell {
+        text-wrap: nowrap;
+        padding: 10px 20px !important;
+    }
+    .saifgs_protable_edit,
+    .protable_detail_delete {
+        border: none !important;
+        box-shadow: none !important;
+    }
+    .saifgs-table-is-enabled table{
+        display: none;
+    }
+    .saifgs-table-is-disabled table{
+        display: TABLE;
+    }
+    .saifgs-blurred-table {
+        filter: blur(1.4px);
+        cursor: not-allowed;
+        position: relative;
+        width: 100%;
+        &::before {
+            position: absolute;
+            content: '';
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            width: 100%;
+            height: 100%;
+            z-index: 2;
+            opacity: 0.5;
+        }
+    }
+    .saifgs-sheets-integrations-table-vissible-div {
+        text-align: center;
+        margin-top: 16px;
+    
+        p {
+            font-size: 16px;
+            font-weight: 500;
+            padding-bottom: 15px;
+        }
+    }
+    .saifgs-upg-pre-btn {
+        font-weight: 500;
+        border-color: #E49B0F;
+        background: #E49B0F;
+        color: #fff;
+    
+        &:hover {
+            background: #fff !important;
+            color: #E49B0F !important;
+            border-color: #E49B0F !important;
+        }
+    }
+}
+
+.protable_detail_delete,
+.gswpi_protable_edit {
+    background-color: transparent;
+}
+
+.protable_detail_delete:hover,
+.gswpi_protable_edit:hover {
+    background-color: transparent !important;
+}
+
+:where(.css-dev-only-do-not-override-1j19io3).saifgs-pro-table-list-toolbar-left {
+    padding-left: 20px;
+}
+
+.saifgs-pro-table-list-toolbar-right form {
+    padding: 5px 15px !important;
+    border-radius: 7px;
+}
+
+.saifgs-modal-root .saifgs-modal-body .saifgs-form {
+    padding: 25px 25px 0 !important;
+}
+
+.saifgs-modal-root .saifgs-modal-body .saifgs-form .saifgs-pro-card-body {
+    padding: 20px !important;
+}
+
+@media (min-width: 1200px) {
+    .saifgs-col-xl-18 {
+        --ant-display: block;
+        display: block;
+        display: var(--ant-display);
+        flex: 0 0 75%;
+        max-width: 98%;
+    }
+}
+
+@media only screen and (max-width: 600px) {
+    #saifgs_source_plugin {
+        width: 100% !important;
+        overflow: auto;
+    }
+}
+
+// For admin dashboard of Wordpress
+#adminmenuwrap {
+    z-index: 2 !important;
+}
+
+.googlesheet .saifgs-tabs-nav-wrap {
+    padding: 0 25px;
+}
+
+.googlesheet .saifgs-form-item-row {
+    width: 100%
+}
+
+.saifgs-select-selection-search-input {
+    border-color: none !important;
+    box-shadow: none !important;
+}

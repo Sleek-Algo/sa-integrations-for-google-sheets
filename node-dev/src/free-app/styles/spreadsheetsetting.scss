@@ -1,0 +1,78 @@
+.spreadsheet {
+    .saifgs-form {
+        background-color: #fff !important;
+        border-radius: 8px;
+        padding: 25px !important;
+    }
+    .saifgs-pro-card {
+        border: 1px solid #f0f0f1;
+        border-radius: 8px !important;
+        background: #f0f0f18c;
+        padding: 20px;
+        margin-bottom: 0 !important;
+    }
+    .saifgs-pro-card .saifgs-pro-card-header {
+        padding-inline: 0 !important;
+        padding-block: 0 !important;
+    }
+    .saifgs-pro-card-body.css-dev-only-do-not-override-1j19io3 {
+        padding-top: 20px !important;
+    }
+    .read-only-text input,
+    .read-only-text textarea {
+        // background-color: #f5f5f5;
+        // color: gray;
+        // border: 1px solid #d9d9d9;
+        // padding: 8px;
+        // border-radius: 4px;
+        cursor: not-allowed;
+    }
+    .sa-toggleBtn {
+        margin-left: 10px;
+    }
+    @media only screen and (max-width: 470.5px) {
+        .sa-toggleBtn {
+            margin-left: 0px;
+            margin-top: 10px;
+        }
+    }
+}
+
+.read-only-text .saifgs-input-outlined {
+    background-color: #f5f5f5 !important;
+    color: gray !important;
+    border: 1px solid #d9d9d9 !important;
+}
+
+.slide-container {
+    overflow: hidden;
+    transition: max-height 0.5s ease-in-out;
+}
+
+.slide-container.expanded {
+    max-height: 2000px;
+    /* A large enough value to accommodate the content */
+}
+
+.slide-container.collapsed {
+    max-height: 0;
+}
+
+@media only screen and (max-width: 767.5px) {
+    .spreadsheet {
+        .saifgs-alert {
+            flex-wrap: wrap;
+            flex-grow: 1;
+            display: flex;
+            align-items: center;
+        }
+        .saifgs-alert-content {
+            width: 100%;
+        }
+        .saifgs-alert-action {
+            width: 100%;
+            text-align: center;
+            padding-top: 20px;
+        }
+    }
+}

@@ -1,0 +1,39 @@
+{
+	"name": "sa-integrations-for-google-sheets",
+	"version": "1.0.0",
+	"description": "This plugin connects your WordPress website with Google Sheets, enabling automatic synchronization of form submissions and WooCommerce order data.",
+	"main": "src/index.js",
+	"scripts": {
+		"build": "wp-scripts build",
+		"check-engines": "wp-scripts check-engines",
+		"check-licenses": "wp-scripts check-licenses",
+		"format": "wp-scripts format",
+		"lint:css": "wp-scripts lint-style",
+		"lint:js": "wp-scripts lint-js",
+		"lint:md:docs": "wp-scripts lint-md-docs",
+		"lint:pkg-json": "wp-scripts lint-pkg-json",
+		"packages-update": "wp-scripts packages-update",
+		"plugin-zip": "wp-scripts plugin-zip",
+		"start": "wp-scripts start",
+		"test:e2e": "wp-scripts test-e2e",
+		"test:unit": "wp-scripts test-unit-js",
+		"translate": "wp i18n make-pot .. ../languages/sa-integrations-for-google-sheets.pot",
+		"wpcs": "cd .. && composer exec phpcs -- --standard=WordPress --extensions=php includes/",
+		"wpcs:fix": "cd .. && composer exec phpcbf -- --standard=WordPress --extensions=php includes/",
+		"build:development": "cd .. && composer run setup-development",
+		"build:production": "cd .. && composer run setup-production",
+		"build:zip": "cross-env CREATE_ZIP=yes wp-scripts build"
+	},
+	"author": "",
+	"license": "ISC",
+	"devDependencies": {
+		"@wordpress/scripts": "^27.1.0",
+		"cross-env": "^7.0.3",
+		"filemanager-webpack-plugin": "^8.0.0"
+	},
+	"dependencies": {
+		"@ant-design/pro-components": "^2.6.49",
+		"@emotion/css": "^11.11.2",
+		"antd": "^5.15.0"
+	}
+}
