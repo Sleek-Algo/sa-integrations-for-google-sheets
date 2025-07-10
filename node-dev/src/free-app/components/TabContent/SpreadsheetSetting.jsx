@@ -1,6 +1,7 @@
 import React, { useState, useEffect } from 'react';
-import { message, Button, Divider, Row, Col, Alert } from 'antd';
-import { DeleteOutlined, DownOutlined } from '@ant-design/icons';
+import { message, Button, Divider, Row, Col, Alert, Flex  } from 'antd';
+import { DeleteOutlined, DownOutlined, ExportOutlined, CheckCircleFilled, CloseCircleFilled } from '@ant-design/icons';
+import { GoogleDriveIcon, GoogleSheetsIcon } from '../../utilities/custom-icons';
 import {
 	ProForm,
 	ProCard,
@@ -114,13 +115,38 @@ const IntegrationSetting = ( { navVisibility } ) => {
 			>
 				<ProCard
 					title={ __(
-						'Spreadsheet Integration',
+						'Google Account Credentials',
 						'sa-integrations-for-google-sheets'
 					) }
+					extra={
+						<div>
+							<Flex vertical gap="small">
+        						<Flex gap="small" wrap>
+									<Button> 
+										<GoogleDriveIcon/> 
+									 	{uploadedFile ? (
+            							  <CheckCircleFilled style={{ color: '#52C41A' }} />
+            							) : (
+            							  <CloseCircleFilled style={{ color: '#FF4D4F' }} />
+            							)}
+									</Button>
+									<Button>
+										<GoogleSheetsIcon /> 
+										{uploadedFile ? (
+            							  <CheckCircleFilled style={{ color: '#52C41A' }} />
+            							) : (
+            							  <CloseCircleFilled style={{ color: '#FF4D4F' }} />
+            							)}
+									</Button>
+								</Flex>
+							</Flex>
+						</div>
+					}
 				>
 					{ uploadedFile ? (
 						<Row>
 							<Col span={ 24 }>
+								<div>You can generate your Google account credentials file according to the official documentation from  <a target="_blank" href="https://developers.google.com/workspace/guides/create-credentials">here <ExportOutlined /></a>.</div>
 								<Alert
 									style={ { marginTop: '15px' } }
 									message={

@@ -1,4 +1,4 @@
-# Copyright (C) 2024 SleekAlgo
+# Copyright (C) 2025 SleekAlgo
 # This file is distributed under the GPL v2 or later.
 msgid ""
 msgstr ""
@@ -9,35 +9,35 @@ msgstr ""
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
-"POT-Creation-Date: 2024-12-20T13:55:19+00:00\n"
+"POT-Creation-Date: 2025-07-10T09:01:44+00:00\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
-"X-Generator: WP-CLI 2.10.0\n"
+"X-Generator: WP-CLI 2.12.0\n"
 "X-Domain: sa-integrations-for-google-sheets\n"
 
 #. Plugin Name of the plugin
-#: D:\local-wp-sites\sa.gswpi.localhost.com\app\public\wp-content\plugins\sa-integrations-for-google-sheets\sa-integrations-for-google-sheets.php
+#: sa-integrations-for-google-sheets.php
 #: assets/backend/free-app/index.js:1
-#: node-dev/src/free-app/components/Header.jsx:11
+#: node-dev/src/free-app/components/Header.jsx:12
 msgid "SA Integrations For Google Sheets"
 msgstr ""
 
 #. Plugin URI of the plugin
-#: D:\local-wp-sites\sa.gswpi.localhost.com\app\public\wp-content\plugins\sa-integrations-for-google-sheets\sa-integrations-for-google-sheets.php
+#: sa-integrations-for-google-sheets.php
 msgid "https://www.sleekalgo.com"
 msgstr ""
 
 #. Description of the plugin
-#: D:\local-wp-sites\sa.gswpi.localhost.com\app\public\wp-content\plugins\sa-integrations-for-google-sheets\sa-integrations-for-google-sheets.php
+#: sa-integrations-for-google-sheets.php
 msgid "This plugin connects your WordPress website with Google Sheets, enabling automatic synchronization of form submissions and WooCommerce order data."
 msgstr ""
 
 #. Author of the plugin
-#: D:\local-wp-sites\sa.gswpi.localhost.com\app\public\wp-content\plugins\sa-integrations-for-google-sheets\sa-integrations-for-google-sheets.php
+#: sa-integrations-for-google-sheets.php
 msgid "SleekAlgo"
 msgstr ""
 
 #. Author URI of the plugin
-#: D:\local-wp-sites\sa.gswpi.localhost.com\app\public\wp-content\plugins\sa-integrations-for-google-sheets\sa-integrations-for-google-sheets.php
+#: sa-integrations-for-google-sheets.php
 msgid "https://www.sleekalgo.com/"
 msgstr ""
 
@@ -67,6 +67,7 @@ msgstr ""
 
 #. translators: %s will be replaced with the error message.
 #: includes/integrations/woo-commerce/class-saifgs-listener-woo-commerce.php:243
+#, php-format
 msgid "Failed to insert data into Google Sheets: %s"
 msgstr ""
 
@@ -80,6 +81,7 @@ msgstr ""
 
 #. translators: %s will be replaced with the error message.
 #: includes/integrations/wp-forms/class-saifgs-listener-wp-forms.php:129
+#, php-format
 msgid "Failed to insert data into Google Sheets:  %s"
 msgstr ""
 
@@ -128,6 +130,7 @@ msgstr ""
 
 #. translators: %s will be replaced with the error message.
 #: includes/rest-api/class-saifgs-integration-edit-form-api.php:204
+#, php-format
 msgid "Failed to fetch Google Sheet data: %s"
 msgstr ""
 
@@ -145,6 +148,7 @@ msgstr ""
 
 #. translators: %s will be replaced with the error message.
 #: includes/rest-api/class-saifgs-integration-google-sheet-tab.php:161
+#, php-format
 msgid "Failed to fetch Google Sheets columns: %s"
 msgstr ""
 
@@ -154,11 +158,13 @@ msgstr ""
 
 #. translators: %s will be replaced with the error message.
 #: includes/rest-api/class-saifgs-integration-google-sheets.php:114
+#, php-format
 msgid "Failed to fetch tabs from Google Sheets: %s"
 msgstr ""
 
 #. translators: %s will be replaced with the error message.
 #: includes/rest-api/class-saifgs-integration-google-sheets.php:175
+#, php-format
 msgid "Failed to fetch Google Sheets: %s"
 msgstr ""
 
@@ -234,7 +240,7 @@ msgstr ""
 
 #: assets/backend/free-app/contact-form-7-entries.js:1
 #: assets/backend/free-app/index.js:1
-#: node-dev/src/free-app/components/TabContent/SpreadsheetSetting.jsx:98
+#: node-dev/src/free-app/components/TabContent/SpreadsheetSetting.jsx:99
 #: node-dev/src/free-app/contact-form-7-entries.jsx:384
 #: node-dev/src/free-app/contact-form-7-entries.jsx:417
 msgid "Submit"
@@ -251,17 +257,23 @@ msgid "Please enter a valid URL"
 msgstr ""
 
 #: assets/backend/free-app/index.js:1
-#: node-dev/src/free-app/components/Header.jsx:16
-msgid "(v1.1.0)"
+#: node-dev/src/free-app/components/Header.jsx:17
+msgid "(v1.0.0)"
 msgstr ""
 
 #: assets/backend/free-app/index.js:1
-#: node-dev/src/free-app/components/Header.jsx:28
+#: node-dev/src/free-app/components/Header.jsx:34
+#: node-dev/src/free-app/components/TabContent/SheetMapping.jsx:526
+msgid "Upgrade to Premium "
+msgstr ""
+
+#: assets/backend/free-app/index.js:1
+#: node-dev/src/free-app/components/Header.jsx:45
 msgid "Support"
 msgstr ""
 
 #: assets/backend/free-app/index.js:1
-#: node-dev/src/free-app/components/Header.jsx:39
+#: node-dev/src/free-app/components/Header.jsx:56
 msgid "Documentation"
 msgstr ""
 
@@ -276,123 +288,123 @@ msgid "Sleekalgo"
 msgstr ""
 
 #: assets/backend/free-app/index.js:1
-#: node-dev/src/free-app/components/TabContent/SpreadsheetSetting.jsx:94
+#: node-dev/src/free-app/components/TabContent/SpreadsheetSetting.jsx:95
 msgid "Reset"
 msgstr ""
 
 #: assets/backend/free-app/index.js:1
-#: node-dev/src/free-app/components/TabContent/SpreadsheetSetting.jsx:116
-msgid "Spreadsheet Integration"
-msgstr ""
-
-#: assets/backend/free-app/index.js:1
-#: node-dev/src/free-app/components/TabContent/SpreadsheetSetting.jsx:129
-msgid "Uploaded File:"
-msgstr ""
-
-#: assets/backend/free-app/index.js:1
-#: node-dev/src/free-app/components/TabContent/SpreadsheetSetting.jsx:55
-msgid "File removed successfully!"
-msgstr ""
-
-#: assets/backend/free-app/index.js:1
-#: node-dev/src/free-app/components/TabContent/SpreadsheetSetting.jsx:62
-msgid "Failed to remove file. Please try again."
-msgstr ""
-
-#: assets/backend/free-app/index.js:1
-#: node-dev/src/free-app/components/TabContent/SpreadsheetSetting.jsx:145
-msgid "Remove File"
+#: node-dev/src/free-app/components/TabContent/SpreadsheetSetting.jsx:117
+msgid "Google Account Credentials"
 msgstr ""
 
 #: assets/backend/free-app/index.js:1
 #: node-dev/src/free-app/components/TabContent/SpreadsheetSetting.jsx:155
+msgid "Uploaded File:"
+msgstr ""
+
+#: assets/backend/free-app/index.js:1
+#: node-dev/src/free-app/components/TabContent/SpreadsheetSetting.jsx:56
+msgid "File removed successfully!"
+msgstr ""
+
+#: assets/backend/free-app/index.js:1
+#: node-dev/src/free-app/components/TabContent/SpreadsheetSetting.jsx:63
+msgid "Failed to remove file. Please try again."
+msgstr ""
+
+#: assets/backend/free-app/index.js:1
+#: node-dev/src/free-app/components/TabContent/SpreadsheetSetting.jsx:171
+msgid "Remove File"
+msgstr ""
+
+#: assets/backend/free-app/index.js:1
+#: node-dev/src/free-app/components/TabContent/SpreadsheetSetting.jsx:181
 msgid "View Detail"
 msgstr ""
 
 #: assets/backend/free-app/index.js:1
-#: node-dev/src/free-app/components/TabContent/SpreadsheetSetting.jsx:168
-#: node-dev/src/free-app/components/TabContent/SpreadsheetSetting.jsx:179
+#: node-dev/src/free-app/components/TabContent/SpreadsheetSetting.jsx:194
+#: node-dev/src/free-app/components/TabContent/SpreadsheetSetting.jsx:205
 msgid "Google Services API Credentials"
 msgstr ""
 
 #: assets/backend/free-app/index.js:1
-#: node-dev/src/free-app/components/TabContent/SpreadsheetSetting.jsx:174
+#: node-dev/src/free-app/components/TabContent/SpreadsheetSetting.jsx:200
 msgid "json_file"
 msgstr ""
 
 #: assets/backend/free-app/index.js:1
-#: node-dev/src/free-app/components/TabContent/SpreadsheetSetting.jsx:183
+#: node-dev/src/free-app/components/TabContent/SpreadsheetSetting.jsx:209
 msgid "Upload your Google Services API credentials JSON file."
 msgstr ""
 
 #: assets/backend/free-app/index.js:1
-#: node-dev/src/free-app/components/TabContent/SpreadsheetSetting.jsx:211
+#: node-dev/src/free-app/components/TabContent/SpreadsheetSetting.jsx:237
 msgid "Failed to upload file. Please try again."
 msgstr ""
 
 #: assets/backend/free-app/index.js:1
-#: node-dev/src/free-app/components/TabContent/SpreadsheetSetting.jsx:231
+#: node-dev/src/free-app/components/TabContent/SpreadsheetSetting.jsx:257
 msgid "JSON File Contents"
 msgstr ""
 
 #: assets/backend/free-app/index.js:1
-#: node-dev/src/free-app/components/TabContent/SpreadsheetSetting.jsx:238
+#: node-dev/src/free-app/components/TabContent/SpreadsheetSetting.jsx:264
 msgid "JSON Extracted Fields"
 msgstr ""
 
 #: assets/backend/free-app/index.js:1
-#: node-dev/src/free-app/components/TabContent/SpreadsheetSetting.jsx:245
+#: node-dev/src/free-app/components/TabContent/SpreadsheetSetting.jsx:271
 msgid "Type"
 msgstr ""
 
 #: assets/backend/free-app/index.js:1
-#: node-dev/src/free-app/components/TabContent/SpreadsheetSetting.jsx:257
+#: node-dev/src/free-app/components/TabContent/SpreadsheetSetting.jsx:283
 msgid "Project Id"
 msgstr ""
 
 #: assets/backend/free-app/index.js:1
-#: node-dev/src/free-app/components/TabContent/SpreadsheetSetting.jsx:268
+#: node-dev/src/free-app/components/TabContent/SpreadsheetSetting.jsx:294
 msgid "Private Key ID"
 msgstr ""
 
 #: assets/backend/free-app/index.js:1
-#: node-dev/src/free-app/components/TabContent/SpreadsheetSetting.jsx:279
+#: node-dev/src/free-app/components/TabContent/SpreadsheetSetting.jsx:305
 msgid "Private Key"
 msgstr ""
 
 #: assets/backend/free-app/index.js:1
-#: node-dev/src/free-app/components/TabContent/SpreadsheetSetting.jsx:291
+#: node-dev/src/free-app/components/TabContent/SpreadsheetSetting.jsx:317
 msgid "Client Email"
 msgstr ""
 
 #: assets/backend/free-app/index.js:1
-#: node-dev/src/free-app/components/TabContent/SpreadsheetSetting.jsx:302
+#: node-dev/src/free-app/components/TabContent/SpreadsheetSetting.jsx:328
 msgid "Client ID"
 msgstr ""
 
 #: assets/backend/free-app/index.js:1
-#: node-dev/src/free-app/components/TabContent/SpreadsheetSetting.jsx:313
+#: node-dev/src/free-app/components/TabContent/SpreadsheetSetting.jsx:339
 msgid "Auth URI"
 msgstr ""
 
 #: assets/backend/free-app/index.js:1
-#: node-dev/src/free-app/components/TabContent/SpreadsheetSetting.jsx:324
+#: node-dev/src/free-app/components/TabContent/SpreadsheetSetting.jsx:350
 msgid "Token URI"
 msgstr ""
 
 #: assets/backend/free-app/index.js:1
-#: node-dev/src/free-app/components/TabContent/SpreadsheetSetting.jsx:335
+#: node-dev/src/free-app/components/TabContent/SpreadsheetSetting.jsx:361
 msgid "Auth Provider x509 Cert URL"
 msgstr ""
 
 #: assets/backend/free-app/index.js:1
-#: node-dev/src/free-app/components/TabContent/SpreadsheetSetting.jsx:346
+#: node-dev/src/free-app/components/TabContent/SpreadsheetSetting.jsx:372
 msgid "Client x509 Cert URL"
 msgstr ""
 
 #: assets/backend/free-app/index.js:1
-#: node-dev/src/free-app/components/TabContent/SpreadsheetSetting.jsx:357
+#: node-dev/src/free-app/components/TabContent/SpreadsheetSetting.jsx:383
 msgid "Universe Domain"
 msgstr ""
 
@@ -967,11 +979,6 @@ msgid ""
 "To enable multiple sheets integrations, \n"
 "\t\t\t\t\t\t\tplease activate the premium version of the plugin. \n"
 "\t\t\t\t\t\t\tThis feature allows you to manage and configure multiple integrations seamlessly."
-msgstr ""
-
-#: assets/backend/free-app/index.js:1
-#: node-dev/src/free-app/components/TabContent/SheetMapping.jsx:526
-msgid "Upgrade to Premium "
 msgstr ""
 
 #: assets/backend/free-app/index.js:1

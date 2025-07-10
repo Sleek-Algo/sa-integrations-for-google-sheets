@@ -18,6 +18,17 @@
                 background-color: #fff;
                 padding: 10px;
             }
+            .saifgs-upgrade-to-premium-btn {
+                font-weight: 500;
+                border-color: #E49B0F;
+                background: #E49B0F;
+                color: #fff;
+                &:hover {
+                    background: #fff !important;
+                    color: #E49B0F !important;
+                    border-color: #E49B0F !important;
+                }
+            }
         }
     }
     

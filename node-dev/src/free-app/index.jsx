@@ -11,9 +11,9 @@ import en_US from 'antd/lib/locale/en_US';
 const BackendApp = () => {
 	return (
 		<ConfigProvider
-			direction="ltr"
-			prefixCls="saifgs"
 			locale={ en_US }
+			direction={ saifgs_customizations_localized_objects?.language_dir }
+			prefixCls="saifgs"
 			theme={ {
 				token: {
 					colorPrimary: '#1677FF',

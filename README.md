@@ -56,7 +56,7 @@ The *SA Integrations For Google Sheets* plugin has been built using the followin
 *SA Integrations For Google Sheets* is an open-source project, and we welcome contributors to be part of our vibrant community! Help us improve the plugin and make it even better.
 
 ### 🤝 Support 👀
-We offers full support on the WordPress.org [Forum](https://wordpress.org/support/plugin/sa-integrations-for-google-sheets/). Before starting a new thread, please check available documentation and other support threads. Leave a clear and concise description of your issue, and we will respond as soon as possible.
+We offers full support on the WordPress.org [Forum](https://wordpress.org/support/plugin/sa-integrations-for-google-sheets/). Before starting a new thread, please check available [documentation](https://www.sleekalgo.com/sa-integrations-for-google-sheets/#installation-guide) and other support threads. Leave a clear and concise description of your issue, and we will respond as soon as possible.
 
 
 ## Installation

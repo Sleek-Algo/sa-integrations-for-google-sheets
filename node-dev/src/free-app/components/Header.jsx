@@ -1,6 +1,7 @@
 import { __ } from '@wordpress/i18n';
 import { Button } from 'antd';
-import { CustomerServiceOutlined, CopyOutlined } from '@ant-design/icons';
+import { CustomerServiceOutlined, CopyOutlined, SketchOutlined  } from '@ant-design/icons';
+
 import '../styles/header.scss';
 const Header = () => {
 	return (
@@ -14,12 +15,28 @@ const Header = () => {
 						) }
 						<span className="saifgs-version">
 							{ __(
-								'(v1.1.0)',
+								'(v1.0.0)',
 								'sa-integrations-for-google-sheets'
 							) }
 						</span>
 					</h1>
 					<div className="saifgs-support">
+						<a
+							href={
+								saifgs_customizations_localized_objects.purchase_premium_url
+							}
+							target="_blank"
+						>
+							<Button
+								icon={ <SketchOutlined /> }
+								className="saifgs-upgrade-to-premium-btn"
+							>
+								{ __(
+									'Upgrade to Premium ',
+									'sa-integrations-for-google-sheets'
+								) }
+							</Button>
+						</a>
 						<a
 							href="https://www.sleekalgo.com/contact-us/"
 							target="_blank"
