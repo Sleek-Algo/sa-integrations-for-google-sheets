@@ -1,6 +1,10 @@
 import { __ } from '@wordpress/i18n';
 import { Button } from 'antd';
-import { CustomerServiceOutlined, CopyOutlined, SketchOutlined  } from '@ant-design/icons';
+import {
+	CustomerServiceOutlined,
+	CopyOutlined,
+	SketchOutlined,
+} from '@ant-design/icons';
 
 import '../styles/header.scss';
 const Header = () => {

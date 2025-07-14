@@ -3,20 +3,23 @@
 msgid ""
 msgstr ""
 "Project-Id-Version: SA Integrations For Google Sheets 1.0.0\n"
-"Report-Msgid-Bugs-To: https://wordpress.org/support/plugin/sa-integrations-for-google-sheets\n"
-"Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
-"Language-Team: LANGUAGE <LL@li.org>\n"
+"Report-Msgid-Bugs-To: https://wordpress.org/support/plugin/sa-integrations-"
+"for-google-sheets\n"
+"Last-Translator: \n"
+"Language-Team: Urdu\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
-"POT-Creation-Date: 2025-07-14T09:43:06+00:00\n"
-"PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
-"X-Generator: WP-CLI 2.12.0\n"
+"POT-Creation-Date: 2025-07-14T09:12:12+00:00\n"
+"PO-Revision-Date: 2025-07-14 09:28+0000\n"
+"X-Generator: Loco https://localise.biz/\n"
 "X-Domain: sa-integrations-for-google-sheets\n"
+"Language: ur\n"
+"Plural-Forms: nplurals=2; plural=n != 1;\n"
+"X-Loco-Version: 2.8.0; wp-6.8.1; php-8.1.29"
 
 #. Plugin Name of the plugin
-#: sa-integrations-for-google-sheets.php
-#: assets/backend/free-app/index.js:1
+#: sa-integrations-for-google-sheets.php assets/backend/free-app/index.js:1
 #: node-dev/src/free-app/components/Header.jsx:16
 msgid "SA Integrations For Google Sheets"
 msgstr ""
@@ -28,7 +31,9 @@ msgstr ""
 
 #. Description of the plugin
 #: sa-integrations-for-google-sheets.php
-msgid "This plugin connects your WordPress website with Google Sheets, enabling automatic synchronization of form submissions and WooCommerce order data."
+msgid ""
+"This plugin connects your WordPress website with Google Sheets, enabling "
+"automatic synchronization of form submissions and WooCommerce order data."
 msgstr ""
 
 #. Author of the plugin
@@ -72,12 +77,20 @@ msgid "Failed to insert data into Google Sheets: %s"
 msgstr ""
 
 #: includes/integrations/wp-forms/class-saifgs-listener-wp-forms.php:48
-msgid "Integration configuration is incomplete. Please check the Google Sheets integration settings."
+msgid ""
+"Integration configuration is incomplete. Please check the Google Sheets "
+"integration settings."
 msgstr ""
+"انضمام کی ترتیب نامکمل ہے۔ براہ کرم گوگل شیٹس کے انضمام کی ترتیبات کو چیک "
+"کریں۔"
 
 #: includes/integrations/wp-forms/class-saifgs-listener-wp-forms.php:84
-msgid "No valid data mapped to Google Sheets columns. Please check your field mappings."
+msgid ""
+"No valid data mapped to Google Sheets columns. Please check your field "
+"mappings."
 msgstr ""
+"گوگل شیٹس کے کالمز میں کوئی درست ڈیٹا میپ نہیں کیا گیا ہے۔ براہ کرم اپنی "
+"فیلڈ میپنگ چیک کریں۔"
 
 #. translators: %s will be replaced with the error message.
 #: includes/integrations/wp-forms/class-saifgs-listener-wp-forms.php:129
@@ -86,13 +99,14 @@ msgid "Failed to insert data into Google Sheets:  %s"
 msgstr ""
 
 #: includes/integrations/wp-forms/class-saifgs-listener-wp-forms.php:180
-msgid "Form data is empty or incomplete. Cannot process Google Sheets integration."
+msgid ""
+"Form data is empty or incomplete. Cannot process Google Sheets integration."
 msgstr ""
 
 #: includes/pages/class-saifgs-dashboard.php:50
 #: includes/pages/class-saifgs-dashboard.php:51
 msgid "G-Sheets Integrations"
-msgstr ""
+msgstr "جی شیٹس انٹیگریشنز"
 
 #: includes/rest-api/class-saifgs-contact-form-7-entries-api.php:62
 msgid "Form Entries"
@@ -100,15 +114,17 @@ msgstr ""
 
 #: includes/rest-api/class-saifgs-contact-form-7-entries-api.php:63
 msgid "Entries"
-msgstr ""
+msgstr "اندراجات"
 
 #: includes/rest-api/class-saifgs-contact-form-7-entries-api.php:80
 msgid "Contact Form 7 Entries"
-msgstr ""
+msgstr "رابطہ فارم 7 اندراجات"
 
 #: includes/rest-api/class-saifgs-contact-form-7-entries-api.php:81
 msgid "Here you can view and manage entries submitted through Contact Form 7."
 msgstr ""
+"یہاں آپ رابطہ فارم 7 کے ذریعے جمع کرائے گئے اندراجات کو دیکھ اور ان کا نظم "
+"کر سکتے ہیں۔"
 
 #: includes/rest-api/class-saifgs-contact-form-7-entries-api.php:181
 msgid "Contact Form 7 is not installed or activated."
@@ -202,7 +218,7 @@ msgstr ""
 
 #: includes/rest-api/class-saifgs-sheetmaping-list.php:161
 msgid "Pagination parameters must be positive integers."
-msgstr ""
+msgstr "صفحہ بندی کے پیرامیٹرز مثبت عدد کے ہونے چاہئیں۔"
 
 #: assets/backend/free-app/contact-form-7-entries.js:1
 #: node-dev/src/free-app/contact-form-7-entries.jsx:221
@@ -275,7 +291,7 @@ msgstr ""
 #: assets/backend/free-app/index.js:1
 #: node-dev/src/free-app/components/Header.jsx:60
 msgid "Documentation"
-msgstr ""
+msgstr "دستاویزی"
 
 #: assets/backend/free-app/index.js:1
 #: node-dev/src/free-app/components/Footer.jsx:8
@@ -295,27 +311,17 @@ msgstr ""
 #: assets/backend/free-app/index.js:1
 #: node-dev/src/free-app/components/TabContent/SpreadsheetSetting.jsx:126
 msgid "Google Account Credentials"
-msgstr ""
+msgstr "گوگل اکاؤنٹ کی اسناد"
 
 #: assets/backend/free-app/index.js:1
-#: node-dev/src/free-app/components/TabContent/SpreadsheetSetting.jsx:167
-msgid "You can generate your Google account credentials file according to the official documentation from"
-msgstr ""
-
-#: assets/backend/free-app/index.js:1
-#: node-dev/src/free-app/components/TabContent/SpreadsheetSetting.jsx:172
-msgid "here"
-msgstr ""
-
-#: assets/backend/free-app/index.js:1
-#: node-dev/src/free-app/components/TabContent/SpreadsheetSetting.jsx:181
+#: node-dev/src/free-app/components/TabContent/SpreadsheetSetting.jsx:183
 msgid "Uploaded File:"
 msgstr ""
 
 #: assets/backend/free-app/index.js:1
 #: node-dev/src/free-app/components/TabContent/SpreadsheetSetting.jsx:65
 msgid "File removed successfully!"
-msgstr ""
+msgstr "فائل کامیابی کے ساتھ ہٹا دی گئی!"
 
 #: assets/backend/free-app/index.js:1
 #: node-dev/src/free-app/components/TabContent/SpreadsheetSetting.jsx:72
@@ -323,98 +329,98 @@ msgid "Failed to remove file. Please try again."
 msgstr ""
 
 #: assets/backend/free-app/index.js:1
-#: node-dev/src/free-app/components/TabContent/SpreadsheetSetting.jsx:197
+#: node-dev/src/free-app/components/TabContent/SpreadsheetSetting.jsx:199
 msgid "Remove File"
 msgstr ""
 
 #: assets/backend/free-app/index.js:1
-#: node-dev/src/free-app/components/TabContent/SpreadsheetSetting.jsx:207
+#: node-dev/src/free-app/components/TabContent/SpreadsheetSetting.jsx:209
 msgid "View Detail"
 msgstr ""
 
 #: assets/backend/free-app/index.js:1
-#: node-dev/src/free-app/components/TabContent/SpreadsheetSetting.jsx:220
-#: node-dev/src/free-app/components/TabContent/SpreadsheetSetting.jsx:231
+#: node-dev/src/free-app/components/TabContent/SpreadsheetSetting.jsx:222
+#: node-dev/src/free-app/components/TabContent/SpreadsheetSetting.jsx:233
 msgid "Google Services API Credentials"
-msgstr ""
+msgstr "گوگل سروسز API اسناد"
 
 #: assets/backend/free-app/index.js:1
-#: node-dev/src/free-app/components/TabContent/SpreadsheetSetting.jsx:226
+#: node-dev/src/free-app/components/TabContent/SpreadsheetSetting.jsx:228
 msgid "json_file"
 msgstr ""
 
 #: assets/backend/free-app/index.js:1
-#: node-dev/src/free-app/components/TabContent/SpreadsheetSetting.jsx:235
+#: node-dev/src/free-app/components/TabContent/SpreadsheetSetting.jsx:237
 msgid "Upload your Google Services API credentials JSON file."
 msgstr ""
 
 #: assets/backend/free-app/index.js:1
-#: node-dev/src/free-app/components/TabContent/SpreadsheetSetting.jsx:263
+#: node-dev/src/free-app/components/TabContent/SpreadsheetSetting.jsx:265
 msgid "Failed to upload file. Please try again."
 msgstr ""
 
 #: assets/backend/free-app/index.js:1
-#: node-dev/src/free-app/components/TabContent/SpreadsheetSetting.jsx:283
+#: node-dev/src/free-app/components/TabContent/SpreadsheetSetting.jsx:285
 msgid "JSON File Contents"
 msgstr ""
 
 #: assets/backend/free-app/index.js:1
-#: node-dev/src/free-app/components/TabContent/SpreadsheetSetting.jsx:290
+#: node-dev/src/free-app/components/TabContent/SpreadsheetSetting.jsx:292
 msgid "JSON Extracted Fields"
 msgstr ""
 
 #: assets/backend/free-app/index.js:1
-#: node-dev/src/free-app/components/TabContent/SpreadsheetSetting.jsx:297
+#: node-dev/src/free-app/components/TabContent/SpreadsheetSetting.jsx:299
 msgid "Type"
 msgstr ""
 
 #: assets/backend/free-app/index.js:1
-#: node-dev/src/free-app/components/TabContent/SpreadsheetSetting.jsx:309
+#: node-dev/src/free-app/components/TabContent/SpreadsheetSetting.jsx:311
 msgid "Project Id"
 msgstr ""
 
 #: assets/backend/free-app/index.js:1
-#: node-dev/src/free-app/components/TabContent/SpreadsheetSetting.jsx:320
+#: node-dev/src/free-app/components/TabContent/SpreadsheetSetting.jsx:322
 msgid "Private Key ID"
 msgstr ""
 
 #: assets/backend/free-app/index.js:1
-#: node-dev/src/free-app/components/TabContent/SpreadsheetSetting.jsx:331
+#: node-dev/src/free-app/components/TabContent/SpreadsheetSetting.jsx:333
 msgid "Private Key"
 msgstr ""
 
 #: assets/backend/free-app/index.js:1
-#: node-dev/src/free-app/components/TabContent/SpreadsheetSetting.jsx:343
+#: node-dev/src/free-app/components/TabContent/SpreadsheetSetting.jsx:345
 msgid "Client Email"
-msgstr ""
+msgstr "کلائنٹ کا ای میل"
 
 #: assets/backend/free-app/index.js:1
-#: node-dev/src/free-app/components/TabContent/SpreadsheetSetting.jsx:354
+#: node-dev/src/free-app/components/TabContent/SpreadsheetSetting.jsx:356
 msgid "Client ID"
-msgstr ""
+msgstr "کلائنٹ کی شناخت"
 
 #: assets/backend/free-app/index.js:1
-#: node-dev/src/free-app/components/TabContent/SpreadsheetSetting.jsx:365
+#: node-dev/src/free-app/components/TabContent/SpreadsheetSetting.jsx:367
 msgid "Auth URI"
 msgstr ""
 
 #: assets/backend/free-app/index.js:1
-#: node-dev/src/free-app/components/TabContent/SpreadsheetSetting.jsx:376
+#: node-dev/src/free-app/components/TabContent/SpreadsheetSetting.jsx:378
 msgid "Token URI"
 msgstr ""
 
 #: assets/backend/free-app/index.js:1
-#: node-dev/src/free-app/components/TabContent/SpreadsheetSetting.jsx:387
+#: node-dev/src/free-app/components/TabContent/SpreadsheetSetting.jsx:389
 msgid "Auth Provider x509 Cert URL"
 msgstr ""
 
 #: assets/backend/free-app/index.js:1
-#: node-dev/src/free-app/components/TabContent/SpreadsheetSetting.jsx:398
+#: node-dev/src/free-app/components/TabContent/SpreadsheetSetting.jsx:400
 msgid "Client x509 Cert URL"
-msgstr ""
+msgstr "کلائنٹ x509 سرٹیفکیٹ یو آر ایل"
 
 #: assets/backend/free-app/index.js:1
-#: node-dev/src/free-app/components/TabContent/SpreadsheetSetting.jsx:409
+#: node-dev/src/free-app/components/TabContent/SpreadsheetSetting.jsx:411
 msgid "Universe Domain"
 msgstr ""
 
@@ -423,7 +429,7 @@ msgstr ""
 #: node-dev/src/free-app/components/TabContent/EditIntegrations.jsx:169
 #: node-dev/src/free-app/components/TabContent/SupportedPlugins.jsx:128
 msgid "Congratulations! Your settings have been successfully saved."
-msgstr ""
+msgstr "مبارک ہو! آپ کی ترتیبات کامیابی کے ساتھ محفوظ ہو گئی ہیں۔"
 
 #: assets/backend/free-app/index.js:1
 #: node-dev/src/free-app/components/TabContent/SupportedPlugins.jsx:204
@@ -448,7 +454,7 @@ msgstr ""
 #: assets/backend/free-app/index.js:1
 #: node-dev/src/free-app/components/TabContent/SupportedPlugins.jsx:246
 msgid "active"
-msgstr ""
+msgstr "فعال"
 
 #: assets/backend/free-app/index.js:1
 #: node-dev/src/free-app/components/TabContent/SupportedPlugins.jsx:250
@@ -463,7 +469,7 @@ msgstr ""
 #: assets/backend/free-app/index.js:1
 #: node-dev/src/free-app/components/TabContent/SupportedPlugins.jsx:64
 msgid " plugin"
-msgstr ""
+msgstr "پلگ ان"
 
 #: assets/backend/free-app/index.js:1
 #: node-dev/src/free-app/components/TabContent/SupportedPlugins.jsx:273
@@ -514,7 +520,7 @@ msgstr ""
 #: assets/backend/free-app/index.js:1
 #: node-dev/src/free-app/components/TabContent/EditIntegrations.jsx:276
 msgid "Edit Sheet Integration"
-msgstr ""
+msgstr "شیٹ انٹیگریشن میں ترمیم کریں۔"
 
 #: assets/backend/free-app/index.js:1
 #: node-dev/src/free-app/components/TabContent/AddIntegration.jsx:289
@@ -548,7 +554,7 @@ msgstr ""
 #: node-dev/src/free-app/components/TabContent/AddIntegration.jsx:305
 #: node-dev/src/free-app/components/TabContent/EditIntegrations.jsx:373
 msgid "Enter the title of google sheet integration."
-msgstr ""
+msgstr "گوگل شیٹ انضمام کا عنوان درج کریں۔"
 
 #: assets/backend/free-app/index.js:1
 #: node-dev/src/free-app/components/TabContent/AddIntegration.jsx:316
@@ -574,7 +580,7 @@ msgstr ""
 #: node-dev/src/free-app/components/TabContent/AddIntegration.jsx:373
 #: node-dev/src/free-app/components/TabContent/EditIntegrations.jsx:446
 msgid "Order Status"
-msgstr ""
+msgstr "آرڈر کی حیثیت"
 
 #: assets/backend/free-app/index.js:1
 #: node-dev/src/free-app/components/TabContent/EditIntegrations.jsx:451
@@ -585,13 +591,13 @@ msgstr ""
 #: node-dev/src/free-app/components/TabContent/AddIntegration.jsx:382
 #: node-dev/src/free-app/components/TabContent/EditIntegrations.jsx:455
 msgid "Order status"
-msgstr ""
+msgstr "آرڈر کی حیثیت"
 
 #: assets/backend/free-app/index.js:1
 #: node-dev/src/free-app/components/TabContent/AddIntegration.jsx:389
 #: node-dev/src/free-app/components/TabContent/EditIntegrations.jsx:462
 msgid "Pending payment"
-msgstr ""
+msgstr "زیر التواء ادائیگیگوگل اکاؤنٹ کی ترتیبات"
 
 #: assets/backend/free-app/index.js:1
 #: node-dev/src/free-app/components/TabContent/AddIntegration.jsx:396
@@ -603,7 +609,7 @@ msgstr ""
 #: node-dev/src/free-app/components/TabContent/AddIntegration.jsx:403
 #: node-dev/src/free-app/components/TabContent/EditIntegrations.jsx:476
 msgid "On hold"
-msgstr ""
+msgstr "ہولڈ پر"
 
 #: assets/backend/free-app/index.js:1
 #: node-dev/src/free-app/components/TabContent/AddIntegration.jsx:410
@@ -707,7 +713,7 @@ msgstr ""
 #: node-dev/src/free-app/components/TabContent/AddIntegration.jsx:564
 #: node-dev/src/free-app/components/TabContent/EditIntegrations.jsx:652
 msgid "Automatically update Google Sheet record"
-msgstr ""
+msgstr "گوگل شیٹ ریکارڈ کو خود بخود اپ ڈیٹ کریں۔"
 
 #: assets/backend/free-app/index.js:1
 #: node-dev/src/free-app/components/TabContent/AddIntegration.jsx:569
@@ -718,7 +724,9 @@ msgstr ""
 
 #: assets/backend/free-app/index.js:1
 #: node-dev/src/free-app/components/TabContent/EditIntegrations.jsx:668
-msgid "This option allows user to update google sheet data automatically upon updating order details."
+msgid ""
+"This option allows user to update google sheet data automatically upon "
+"updating order details."
 msgstr ""
 
 #: assets/backend/free-app/index.js:1
@@ -737,7 +745,7 @@ msgstr ""
 #: node-dev/src/free-app/components/TabContent/AddIntegration.jsx:614
 #: node-dev/src/free-app/components/TabContent/EditIntegrations.jsx:712
 msgid "Generate Mapping!"
-msgstr ""
+msgstr "میپنگ تیار کریں!"
 
 #: assets/backend/free-app/index.js:1
 #: node-dev/src/free-app/components/TabContent/AddIntegration.jsx:624
@@ -761,7 +769,7 @@ msgstr ""
 #: node-dev/src/free-app/components/TabContent/AddIntegration.jsx:678
 #: node-dev/src/free-app/components/TabContent/EditIntegrations.jsx:778
 msgid "(Premium)"
-msgstr ""
+msgstr "(پریمیم)"
 
 #: assets/backend/free-app/index.js:1
 #: node-dev/src/free-app/components/TabContent/AddIntegration.jsx:696
@@ -788,7 +796,7 @@ msgstr ""
 #: assets/backend/free-app/index.js:1
 #: node-dev/src/free-app/components/TabContent/AddIntegration.jsx:257
 msgid "Add Sheet Integration"
-msgstr ""
+msgstr "شیٹ انٹیگریشن شامل کریں۔"
 
 #: assets/backend/free-app/index.js:1
 #: node-dev/src/free-app/components/TabContent/AddIntegration.jsx:378
@@ -854,7 +862,7 @@ msgstr ""
 #: node-dev/src/free-app/components/TabContent/SheetMapping.jsx:138
 #: node-dev/src/free-app/components/TabContent/SheetMapping.jsx:274
 msgid "Actions"
-msgstr ""
+msgstr "اعمال"
 
 #: assets/backend/free-app/index.js:1
 #: node-dev/src/free-app/components/TabContent/SheetMapping.jsx:181
@@ -960,12 +968,12 @@ msgstr ""
 #: assets/backend/free-app/index.js:1
 #: node-dev/src/free-app/components/TabContent/SheetMapping.jsx:353
 msgid "All"
-msgstr ""
+msgstr "تمام"
 
 #: assets/backend/free-app/index.js:1
 #: node-dev/src/free-app/components/TabContent/SheetMapping.jsx:365
 msgid "Contact Form 7"
-msgstr ""
+msgstr "رابطہ فارم 7"
 
 #: assets/backend/free-app/index.js:1
 #: node-dev/src/free-app/components/TabContent/SheetMapping.jsx:389
@@ -981,14 +989,15 @@ msgstr ""
 #: node-dev/src/free-app/components/TabContent/SheetMapping.jsx:423
 #: node-dev/src/free-app/components/TabContent/SheetMapping.jsx:451
 msgid "Add Integration"
-msgstr ""
+msgstr "انضمام شامل کریں۔"
 
 #: assets/backend/free-app/index.js:1
 #: node-dev/src/free-app/components/TabContent/SheetMapping.jsx:517
 msgid ""
 "To enable multiple sheets integrations, \n"
 "\t\t\t\t\t\t\tplease activate the premium version of the plugin. \n"
-"\t\t\t\t\t\t\tThis feature allows you to manage and configure multiple integrations seamlessly."
+"\t\t\t\t\t\t\tThis feature allows you to manage and configure multiple "
+"integrations seamlessly."
 msgstr ""
 
 #: assets/backend/free-app/index.js:1
@@ -999,7 +1008,7 @@ msgstr ""
 #: assets/backend/free-app/index.js:1
 #: node-dev/src/free-app/components/NavTabs.jsx:55
 msgid "Google Account Settings"
-msgstr ""
+msgstr "گوگل اکاؤنٹ کی ترتیبات"
 
 #: assets/backend/free-app/index.js:1
 #: node-dev/src/free-app/components/NavTabs.jsx:68

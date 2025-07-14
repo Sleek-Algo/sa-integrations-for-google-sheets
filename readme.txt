@@ -77,6 +77,12 @@ For further details please check our [Installation Guide](https://www.sleekalgo.
 == Upgrade Notice ==  
 Upgrade to the **Premium Version** to unlock the Premium Version advanced features.
   
+== Screenshots ==
+1. You can integrate Google account by uploading generated access credential json file.
+2. View and manage your Google account credentials.
+3. You can enabled desired plugin integration.
+4. You can create integration and map source data fields with destination sheet's columns
+5. The data is stored into the connected sheet according mapping.
 
 == Frequently Asked Questions ==
 = How much integrations can i create? =

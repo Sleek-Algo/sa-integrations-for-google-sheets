@@ -1,7 +1,16 @@
 import React, { useState, useEffect } from 'react';
-import { message, Button, Divider, Row, Col, Alert, Flex  } from 'antd';
-import { DeleteOutlined, DownOutlined, ExportOutlined, CheckCircleFilled, CloseCircleFilled } from '@ant-design/icons';
-import { GoogleDriveIcon, GoogleSheetsIcon } from '../../utilities/custom-icons';
+import { message, Button, Divider, Row, Col, Alert, Flex } from 'antd';
+import {
+	DeleteOutlined,
+	DownOutlined,
+	ExportOutlined,
+	CheckCircleFilled,
+	CloseCircleFilled,
+} from '@ant-design/icons';
+import {
+	GoogleDriveIcon,
+	GoogleSheetsIcon,
+} from '../../utilities/custom-icons';
 import {
 	ProForm,
 	ProCard,
@@ -121,22 +130,30 @@ const IntegrationSetting = ( { navVisibility } ) => {
 					extra={
 						<div>
 							<Flex vertical gap="small">
-        						<Flex gap="small" wrap>
-									<Button> 
-										<GoogleDriveIcon/> 
-									 	{uploadedFile ? (
-            							  <CheckCircleFilled style={{ color: '#52C41A' }} />
-            							) : (
-            							  <CloseCircleFilled style={{ color: '#FF4D4F' }} />
-            							)}
+								<Flex gap="small" wrap>
+									<Button>
+										<GoogleDriveIcon />
+										{ uploadedFile ? (
+											<CheckCircleFilled
+												style={ { color: '#52C41A' } }
+											/>
+										) : (
+											<CloseCircleFilled
+												style={ { color: '#FF4D4F' } }
+											/>
+										) }
 									</Button>
 									<Button>
-										<GoogleSheetsIcon /> 
-										{uploadedFile ? (
-            							  <CheckCircleFilled style={{ color: '#52C41A' }} />
-            							) : (
-            							  <CloseCircleFilled style={{ color: '#FF4D4F' }} />
-            							)}
+										<GoogleSheetsIcon />
+										{ uploadedFile ? (
+											<CheckCircleFilled
+												style={ { color: '#52C41A' } }
+											/>
+										) : (
+											<CloseCircleFilled
+												style={ { color: '#FF4D4F' } }
+											/>
+										) }
 									</Button>
 								</Flex>
 							</Flex>
@@ -146,7 +163,16 @@ const IntegrationSetting = ( { navVisibility } ) => {
 					{ uploadedFile ? (
 						<Row>
 							<Col span={ 24 }>
-								<div>You can generate your Google account credentials file according to the official documentation from  <a target="_blank" href="https://developers.google.com/workspace/guides/create-credentials">here <ExportOutlined /></a>.</div>
+								<div>
+									{ __('You can generate your Google account credentials file according to the official documentation from', 'sa-integrations-for-google-sheets' ) }
+									<a
+										target="_blank"
+										href="https://developers.google.com/workspace/guides/create-credentials"
+									>
+										{ __('here', 'sa-integrations-for-google-sheets' ) } <ExportOutlined />
+									</a>
+									.
+								</div>
 								<Alert
 									style={ { marginTop: '15px' } }
 									message={
