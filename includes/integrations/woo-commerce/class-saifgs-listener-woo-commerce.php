@@ -189,7 +189,7 @@ if ( ! class_exists( '\SAIFGS\Integrations\WooCommerce\SAIFGS_Listener_Woo_Comme
 		private function saifgs_insert_data_to_google_sheet( $data, $google_work_sheet_id, $google_sheet_tab_id, $order_id, $range, $integration_data, $status ) {
 			global $wpdb;
 			if ( ! is_array( $data ) || empty( $google_work_sheet_id ) || empty( $google_sheet_tab_id ) || empty( $range ) || empty( $integration_data ) || empty( $order_id ) ) {
-				throw new \InvalidArgumentException( __( 'Invalid or missing input data.', 'sa-integrations-for-google-sheets' ) );
+				throw new \Exception( esc_html__( 'Invalid or missing input data.', 'sa-integrations-for-google-sheets' ) );
 			}
 
 			$set_values = array();
@@ -240,7 +240,7 @@ if ( ! class_exists( '\SAIFGS\Integrations\WooCommerce\SAIFGS_Listener_Woo_Comme
 				// @codingStandardsIgnoreEnd
 			} catch ( \Exception $e ) {
 				// translators: %s will be replaced with the error message.
-				throw new \Exception( sprintf( __( 'Failed to insert data into Google Sheets: %s', 'sa-integrations-for-google-sheets' ), esc_html( $e->getMessage() ) ) );
+				throw new \Exception( esc_html( sprintf( __( 'Failed to insert data into Google Sheets: %s', 'sa-integrations-for-google-sheets' ), $e->getMessage() ) ) );
 			}
 		}
 	}

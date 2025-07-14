@@ -45,7 +45,7 @@ if ( ! class_exists( '\SAIFGS\Integrations\WPForms\SAIFGS_Listener_WP_Forms ' ) 
 
 			// Ensure integration settings are valid.
 			if ( empty( $integration['google_work_sheet_id'] ) || empty( $integration['google_sheet_tab_id'] ) || empty( $integration['google_sheet_column_range'] ) ) {
-				throw new \Exception( __( 'Integration configuration is incomplete. Please check the Google Sheets integration settings.', 'sa-integrations-for-google-sheets' ) );
+				throw new \Exception( esc_html__( 'Integration configuration is incomplete. Please check the Google Sheets integration settings.', 'sa-integrations-for-google-sheets' ) );
 			}
 
 			$spreadsheet_id = sanitize_text_field( $integration['google_work_sheet_id'] );
@@ -81,7 +81,7 @@ if ( ! class_exists( '\SAIFGS\Integrations\WPForms\SAIFGS_Listener_WP_Forms ' ) 
 
 			// Check if there are valid mapped values.
 			if ( empty( $mapped_values ) ) {
-				throw new \Exception( __( 'No valid data mapped to Google Sheets columns. Please check your field mappings.', 'sa-integrations-for-google-sheets' ) );
+				throw new \Exception( esc_html__( 'No valid data mapped to Google Sheets columns. Please check your field mappings.', 'sa-integrations-for-google-sheets' ) );
 			}
 
 			// Check if there are values to insert.
@@ -126,7 +126,7 @@ if ( ! class_exists( '\SAIFGS\Integrations\WPForms\SAIFGS_Listener_WP_Forms ' ) 
 
 				} catch ( \Exception $e ) {
 					// translators: %s will be replaced with the error message.
-					throw new \Exception( __( 'Failed to insert data into Google Sheets:  %s', 'sa-integrations-for-google-sheets' ), esc_html( $e->getMessage() ) );
+					throw new \Exception( esc_html( sprintf( __( 'Failed to insert data into Google Sheets:  %s', 'sa-integrations-for-google-sheets' ), $e->getMessage() ) ) );
 				}
 			}
 		}
@@ -177,7 +177,7 @@ if ( ! class_exists( '\SAIFGS\Integrations\WPForms\SAIFGS_Listener_WP_Forms ' ) 
 					}
 				}
 			} else {
-				throw new \Exception( __( 'Form data is empty or incomplete. Cannot process Google Sheets integration.', 'sa-integrations-for-google-sheets' ) );
+				throw new \Exception( esc_html__( 'Form data is empty or incomplete. Cannot process Google Sheets integration.', 'sa-integrations-for-google-sheets' ) );
 			}
 		}
 

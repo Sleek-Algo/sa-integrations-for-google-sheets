@@ -98,7 +98,7 @@ if ( ! class_exists( '\SAIFGS\RestApi\SAIFGS_Integration_Google_Sheet_Tab' ) ) {
 			$google_sheet_id           = sanitize_text_field( $json_data['google_sheet_data'] ) ?? '';
 			$google_sheet_tab_selected = sanitize_text_field( $json_data['google_sheet_tab_selected'] ) ?? '';
 			if ( empty( $google_sheet_id ) || empty( $google_sheet_tab_selected ) ) {
-				wp_send_json_error( __( 'Missing required parameters: Google Sheet ID or range.', 'text-domain' ), 400 );
+				wp_send_json_error( __( 'Missing required parameters: Google Sheet ID or range.', 'sa-integrations-for-google-sheets' ), 400 );
 			}
 
 			// Initialize Google Sheets API client.
