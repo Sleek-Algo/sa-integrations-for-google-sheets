@@ -36,22 +36,12 @@ if ( ! class_exists( '\SAIFGS\Bootstrap\SAIFGS_App' ) ) {
 		 * @access public
 		 */
 		public function __construct() {
-			add_action( 'saifgs_plugin_loaded', array( $this, 'saifgs_init_localization' ), 10 );
 			add_action( 'init', array( $this, 'saifgs_init_integrations' ), 10 );
 			add_action( 'init', array( $this, 'saifgs_init_pages' ), 10 );
 			add_action( 'init', array( $this, 'saifgs_init_settings' ), 10 );
 			add_action( 'init', array( $this, 'saifgs_init_rest_api' ), 10 );
 			add_action( 'init', array( $this, 'saifgs_init_create_attachments_folder' ), 10 );
 			add_action( 'init', array( $this, 'saifgs_init_create_credentials_folder' ), 10 );
-		}
-
-		/**
-		 * Manage activation plugin
-		 *
-		 * @return void
-		 */
-		public function saifgs_init_localization() {
-			load_plugin_textdomain( SAIFGS_TEXT_DOMAIN, false, SAIFGS_TEXT_DOMAIN_PATH );
 		}
 
 		/**
