@@ -67,10 +67,10 @@ if ( file_exists( dirname( __FILE__ ) . '/vendor/autoload.php' ) ) {
 register_activation_hook( __FILE__, [\SAIFGS\BootStrap\SAIFGS_Activate::get_instance(), 'saifgs_plugin_activation_manager'] );
 
 
-function init_saifgs_plugin() {
+function saifgs_init_plugin() {
     $active_plugins = apply_filters( 'active_plugins', get_option( 'active_plugins' ) );
     \SAIFGS\Bootstrap\SAIFGS_App::get_instance();
     do_action( 'saifgs_plugin_loaded' );
 }
 
-add_action( 'plugins_loaded', 'init_saifgs_plugin', 30 );
+add_action( 'plugins_loaded', 'saifgs_init_plugin', 30 );
