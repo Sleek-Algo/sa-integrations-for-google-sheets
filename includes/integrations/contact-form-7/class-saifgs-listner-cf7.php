@@ -45,15 +45,12 @@ if ( ! class_exists( '\SAIFGS\Integrations\ContactForm7\SAIFGS_Listner_CF7' ) ) 
 			if ( isset( $_FILES ) && ! empty( $_FILES ) ) {
 
 				// Get the name of the file input field dynamically from the $_FILES array.
-				$file_input_name = key( $_FILES );
+				$file_input_name = key( wp_unslash( $_FILES ) );
 
 				// Access the file upload data.
 				if ( isset( $_FILES[ $file_input_name ] ) ) {
-					// Sanitize the input field name (optional if the index is validated elsewhere).
-					$file_input_name_sanitized = isset( $file_input_name ) ? sanitize_text_field( wp_unslash( $file_input_name ) ) : '';
-
-					// Unslash and properly extract the $_FILES data.
-					$file = wp_unslash( $_FILES[ $file_input_name ] );
+					// Unslash and properly extract the $_FILES data. & Sanitize the input field name (optional if the index is validated elsewhere).
+					$file = sanitize_text_field( wp_unslash( $_FILES[ $file_input_name ] ) );
 
 					// Ensure the file upload has no errors.
 					if ( isset( $file['error'] ) && UPLOAD_ERR_OK !== $file['error'] ) {
@@ -235,16 +232,17 @@ if ( ! class_exists( '\SAIFGS\Integrations\ContactForm7\SAIFGS_Listner_CF7' ) ) 
 			// Insert the meta data into the meta table.
 			foreach ( $posted_data as $key => $value ) {
 				// Sanitize the meta key and value.
+				$meta_key   = sanitize_text_field( $key );
 				$meta_value = is_array( $value ) ? implode( ', ', array_map( 'sanitize_text_field', $value ) ) : sanitize_text_field( $value );
 
 				$meta_data = array(
 					'entry_id'   => $entry_id,
-					'meta_key'   => $key,
+					'meta_key'   => $meta_key,
 					'meta_value' => $meta_value,
 				);
 
 				// Insert each meta entry and check for errors.
-				$meta_inserted = $wpdb->insert( $meta_table, $meta_data );
+				$meta_inserted = $wpdb->insert( $meta_table, $meta_data );// phpcs:ignore WordPress.DB.DirectDatabaseQuery.DirectQuery -- Custom table requires direct access.
 			}
 
 			// Return the last inserted entry ID.
@@ -322,10 +320,9 @@ if ( ! class_exists( '\SAIFGS\Integrations\ContactForm7\SAIFGS_Listner_CF7' ) ) 
 					$response         = $client->saifgs_request( $url, $args, 'post' );
 					$sheet_tab_row_id = $response['updates']['updatedRange'];
 
-					// Insert the row mapping into the integration rows table.
-					$table_name = $wpdb->prefix . 'saifgs_integrations_rows';
+					// phpcs:ignore WordPress.DB.DirectDatabaseQuery.DirectQuery -- Custom table requires direct access.
 					$wpdb->insert(
-						$table_name,
+						$wpdb->prefix . 'saifgs_integrations_rows',
 						array(
 							'integration_id'      => $integration['id'],
 							'sheet_id'            => $spreadsheet_id,
@@ -352,64 +349,71 @@ if ( ! class_exists( '\SAIFGS\Integrations\ContactForm7\SAIFGS_Listner_CF7' ) ) 
 		 * @return array|false An array of integration data or false on failure.
 		 */
 		public function saifgs_fetch_integration_data( $form_id, $sheet_tab_id, $form_type ) {
+			// Generate unique cache key based on parameters.
+			$cache_key = 'saifgs_integration_data_' . $form_id . '_' . $sheet_tab_id . '_' . $form_type;
+			$results   = wp_cache_get( $cache_key, 'saifgs_integrations' );
+
+			// Return cached data if available.
+			if ( false !== $results ) {
+				return $results;
+			}
+
 			global $wpdb;
 
-			// Define the table name.
-			$table_name   = $wpdb->prefix . 'saifgs_integrations';
 			$plugin_id    = 'contact_form_7';
 			$source_id    = absint( $form_id );
 			$sheet_tab_id = sanitize_text_field( $sheet_tab_id );
 
-			// Prepare the SQL query using a prepared statement.
-			$query = $wpdb->prepare(
-				"SELECT google_sheet_column_map 
-				 FROM $table_name 
-				 WHERE plugin_id = %s 
-				   AND source_id = %d 
-				   AND google_sheet_tab_id = %s",
-				$plugin_id,
-				$source_id,
-				$sheet_tab_id
+			// Fetch results from the database.
+			$db_results = $wpdb->get_results( // phpcs:ignore WordPress.DB.DirectDatabaseQuery.DirectQuery -- Custom table requires direct access.
+				$wpdb->prepare(
+					"SELECT `google_sheet_column_map` 
+					FROM `{$wpdb->prefix}saifgs_integrations` 
+					WHERE `plugin_id` = %s 
+					AND `source_id` = %d 
+					AND `google_sheet_tab_id` = %s",
+					$plugin_id,
+					$source_id,
+					$sheet_tab_id
+				)
 			);
 
-			// Fetch results from the database.
-			$results = $wpdb->get_results( $query );
-
-			// If no results are found, return an empty array.
-			if ( empty( $results ) ) {
+			// If no results are found, cache and return empty array.
+			if ( empty( $db_results ) ) {
+				wp_cache_set( $cache_key, array(), 'saifgs_integrations', ( 10 * MINUTE_IN_SECONDS ) );
 				return array();
 			}
 
 			// Initialize integration data.
 			$integration_data = array();
 
-			if ( $results ) {
-				foreach ( $results as $result ) {
-					$maping_data = maybe_unserialize( $result->google_sheet_column_map );
-					foreach ( $maping_data as $data ) {
-						if ( 'update_form' === $form_type ) {
-							if ( isset( $data->source_filed_index ) ) {
-								$integration_data[ $data->google_sheet_index ] = $data->source_filed_index;
+			foreach ( $db_results  as $result ) {
+				$maping_data = maybe_unserialize( $result->google_sheet_column_map );
+				foreach ( $maping_data as $data ) {
+					if ( 'update_form' === $form_type ) {
+						if ( isset( $data->source_filed_index ) ) {
+							$integration_data[ $data->google_sheet_index ] = $data->source_filed_index;
 
-								// Include additional validation toggle if available.
-								if ( isset( $data->source_filed_index_toggle ) ) {
-									$integration_data[] = array(
-										'valid' => (bool) $data->source_filed_index_toggle,
-										$data->google_sheet_index => $data->source_filed_index,
-									);
-								}
+							// Include additional validation toggle if available.
+							if ( isset( $data->source_filed_index_toggle ) ) {
+								$integration_data[] = array(
+									'valid' => (bool) $data->source_filed_index_toggle,
+									$data->google_sheet_index => $data->source_filed_index,
+								);
 							}
-						} else {
-							if ( isset( $data->source_filed_index ) ) {
-								$integration_data[ $data->google_sheet_index ] = $data->source_filed_index;
-							}
+						}
+					} else {
+						if ( isset( $data->source_filed_index ) ) {
+							$integration_data[ $data->google_sheet_index ] = $data->source_filed_index;
 						}
 					}
 				}
-				return $integration_data;
-			} else {
-				return false;
 			}
+
+			// Cache the results for 10 minutes.
+			wp_cache_set( $cache_key, $integration_data, 'saifgs_integrations', ( 10 * MINUTE_IN_SECONDS ) );
+
+			return $integration_data;
 		}
 	}
 }

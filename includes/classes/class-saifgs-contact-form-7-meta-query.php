@@ -47,7 +47,7 @@ if ( ! class_exists( '\SAIFGS\Classes\SAIFGS_Contact_Form_7_Meta_Query' ) ) {
 		 * @return array meta_data meta values.
 		 */
 		public static function saifgs_get_meta( $id, $meta_key = '', $single = true ) {
-			$cache_key = ( ! empty( $meta_key ) ) ? 'saifgs_session_' . $id . '_meta_' . $meta_key . '_value' : 'saifgs_session_' . $id . '_meta_values';
+			$cache_key = 'saifgs_get_meta_' . $id . '_' . $meta_key;
 			$results   = wp_cache_get( $cache_key );
 
 			if ( false === $results ) {
@@ -75,7 +75,7 @@ if ( ! class_exists( '\SAIFGS\Classes\SAIFGS_Contact_Form_7_Meta_Query' ) ) {
 				}
 
 				// Update Data into Chache just for 10 minute.
-				wp_cache_set( $cache_key, $results, 'saifgs_sessions', ( 10 * MINUTE_IN_SECONDS ) );
+				wp_cache_set( $cache_key, $results, 'saifgs_get_meta', ( 10 * MINUTE_IN_SECONDS ) );
 			}
 
 			return wp_list_pluck( $results, 'meta_value', 'meta_key' );

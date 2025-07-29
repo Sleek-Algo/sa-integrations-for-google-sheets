@@ -63,8 +63,8 @@
       "composer run setup-development",
       "composer install --no-dev"
     ],
-    "wpcs": "./vendor/bin/phpcs --standard=WordPress --extensions=php  includes/integrations/contact-form-7/class-saifgs-listner-cf7.php",
-    "wpcs:fix": "./vendor/bin/phpcbf --standard=WordPress --extensions=php  includes/integrations/contact-form-7/class-saifgs-listner-cf7.php",
+    "wpcs": "./vendor/bin/phpcs --standard=WordPress --extensions=php  includes/rest-api/class-saifgs-contact-form-7-entries-api.php",
+    "wpcs:fix": "./vendor/bin/phpcbf --standard=WordPress --extensions=php  includes/rest-api/class-saifgs-contact-form-7-entries-api.php",
     "post-install-cmd": [
       "vendor/bin/phpcs --config-set installed_paths vendor/wp-coding-standards/wpcs"
     ],

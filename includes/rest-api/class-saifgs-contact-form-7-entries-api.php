@@ -76,13 +76,13 @@ if ( ! class_exists( '\SAIFGS\RestApi\SAIFGS_Contact_Form_7_Entries_API' ) ) {
 		 */
 		public function saifgs_render_entries_page() {
 			?>
-			<div class="wrap">
-				<h1><?php esc_html_e( 'Contact Form 7 Entries', 'sa-integrations-for-google-sheets' ); ?></h1>
-				<p><?php esc_html_e( 'Here you can view and manage entries submitted through Contact Form 7.', 'sa-integrations-for-google-sheets' ); ?></p>
-				<!-- Content for managing and displaying entries can be added here. -->
-				<div id="saifgs-cf7-app"></div>
-			</div>
-			<?php
+				<div class="wrap">
+					<h1><?php esc_html_e( 'Contact Form 7 Entries', 'sa-integrations-for-google-sheets' ); ?></h1>
+					<p><?php esc_html_e( 'Here you can view and manage entries submitted through Contact Form 7.', 'sa-integrations-for-google-sheets' ); ?></p>
+					<!-- Content for managing and displaying entries can be added here. -->
+					<div id="saifgs-cf7-app"></div>
+				</div>
+				<?php
 		}
 
 		/**
@@ -214,62 +214,117 @@ if ( ! class_exists( '\SAIFGS\RestApi\SAIFGS_Contact_Form_7_Entries_API' ) ) {
 		 * @return \WP_REST_Response The response containing form entries or an error.
 		 */
 		public function saifgs_handle_contact_form_entries( \WP_REST_Request $request ) {
-			// @codingStandardsIgnoreStart
 			global $wpdb;
 
 			// Validate and sanitize input parameters.
 			$form_id = absint( $request->get_param( 'form_id' ) );
 
 			// If form_id is not found, handle the error.
-			if (!$form_id) {
-				return new \WP_REST_Response([
-					'error' => __( 'Form ID is required.', 'sa-integrations-for-google-sheets' )
-				], 400);
+			if ( ! $form_id ) {
+				return new \WP_REST_Response(
+					array(
+						'error' => __( 'Form ID is required.', 'sa-integrations-for-google-sheets' ),
+					),
+					400
+				);
 			}
 
-			$limit = absint( $request->get_param('limit') ) ?: 10;
-			$current_page = absint( $request->get_param('current_page') ) ?: 1;
-			$offset = ($current_page - 1) * $limit;
-			$filter_start_date = sanitize_text_field( $request->get_param('filter_start_date') );
-			$filter_end_date = sanitize_text_field( $request->get_param('filter_end_date') );
-			$search_entry = sanitize_text_field( $request->get_param('search_entry') );
+			// Get pagination parameters with defaults.
+			$limit = absint( $request->get_param( 'limit' ) );
+			$limit = ( 0 === $limit ) ? 10 : $limit;
+
+			$current_page = absint( $request->get_param( 'current_page' ) );
+			$current_page  = ( 0 === $current_page ) ? 1 : $current_page;
+
+			$offset = ( $current_page - 1 ) * $limit;
+
+			// Sanitize filter parameters.
+			$filter_start_date = sanitize_text_field( $request->get_param( 'filter_start_date' ) );
+			$filter_end_date   = sanitize_text_field( $request->get_param( 'filter_end_date' ) );
+			$search_entry      = sanitize_text_field( $request->get_param( 'search_entry' ) );
+
+			// Generate cache keys.
+			$entries_cache_key = 'saifgs_cf7_entries_' . $form_id . '_' . $limit . '_' . $offset;
+			$total_cache_key   = 'saifgs_cf7_total_' . $form_id;
+
+			// Try to get cached entries.
+			$entries = wp_cache_get( $entries_cache_key, 'saifgs_entries' );
+			$total   = wp_cache_get( $total_cache_key, 'saifgs_entries' );
+
+			if ( false === $entries ) {
+				// Get entries from database with proper prepare.
+				$entries_query = $wpdb->prepare(
+					"SELECT id, form_id, created_at, updated_at 
+						FROM {$wpdb->prefix}saifgs_contact_form_7_entries 
+						WHERE form_id = %d 
+						ORDER BY id DESC 
+						LIMIT %d OFFSET %d",
+					$form_id,
+					$limit,
+					$offset
+				);
+
+				// phpcs:ignore WordPress.DB.DirectDatabaseQuery.DirectQuery, WordPress.DB.PreparedSQL.NotPrepared
+				$entries = $wpdb->get_results( $entries_query, ARRAY_A );
+
+				// Cache entries for 5 minutes.
+				wp_cache_set( $entries_cache_key, $entries, 'saifgs_entries', 5 * MINUTE_IN_SECONDS );
+			}
+
+			if ( false === $total ) {
+				// Get total count with proper prepare.
+				$total_query = $wpdb->prepare(
+					"SELECT COUNT(id) 
+						FROM {$wpdb->prefix}saifgs_contact_form_7_entries 
+						WHERE form_id = %d",
+					$form_id
+				);
+
+				// phpcs:ignore WordPress.DB.DirectDatabaseQuery.DirectQuery, WordPress.DB.PreparedSQL.NotPrepared
+				$total = $wpdb->get_var( $total_query );
+
+				// Cache total for longer (15 minutes) as it changes less frequently.
+				wp_cache_set( $total_cache_key, $total, 'saifgs_entries', 15 * MINUTE_IN_SECONDS );
+			}
 
 			// Retrieve the form object.
-			$contact_form = wpcf7_contact_form($form_id);
-			
-			$form_fields = [];
-			if ($contact_form) {
+			$contact_form = wpcf7_contact_form( $form_id );
+			$form_fields  = array();
+
+			if ( $contact_form ) {
 				$form_fields = $contact_form->scan_form_tags();
 			}
-			
-			$query = $wpdb->prepare("SELECT id, form_id, created_at, updated_at FROM {$wpdb->prefix}saifgs_contact_form_7_entries WHERE form_id = %d ORDER BY id DESC LIMIT %d OFFSET %d", $form_id, $limit, $offset);
-            
-			$entries = $wpdb->get_results($query, ARRAY_A);
-            
-			$entry_ids = wp_list_pluck($entries, 'id');
-			
-			$entry_meta = [];
-			if (!empty($entry_ids)) {
-				$entry_meta = $wpdb->get_results(sprintf(
-					"SELECT meta_id, entry_id, meta_key, meta_value	 FROM {$wpdb->prefix}saifgs_contact_form_7_entrymeta WHERE entry_id IN (%s)",
-					implode(',', array_map('intval', $entry_ids))
-				), ARRAY_A);
-			}
-			
-			foreach ($entries as $index => $entry) {
-				$entry_meta_values = \SAIFGS\Classes\SAIFGS_Contact_Form_7_Meta_Query::saifgs_get_meta($entry['id']);
-				$entries[$index]['meta'] = $entry_meta_values;
-				$entries[$index]['fieldsmeta'] = $form_fields;
+
+			// Process entries if we have any.
+			if ( ! empty( $entries ) ) {
+				$entry_ids = wp_list_pluck( $entries, 'id' );
+
+				$entry_meta = array();
+				if ( ! empty( $entry_ids ) ) {
+					// phpcs:ignore WordPress.DB.DirectDatabaseQuery.DirectQuery, WordPress.DB.PreparedSQL.NotPrepared
+					$entry_meta = $wpdb->get_results(
+						sprintf(
+							"SELECT meta_id, entry_id, meta_key, meta_value	 FROM {$wpdb->prefix}saifgs_contact_form_7_entrymeta WHERE entry_id IN (%s)",
+							implode( ',', array_map( 'intval', $entry_ids ) ) // phpcs:ignore WordPress.DB.DirectDatabaseQuery.DirectQuery, WordPress.DB.PreparedSQL.NotPrepared
+						),
+						ARRAY_A
+					);
+				}
+
+				foreach ( $entries as $index => $entry ) {
+					$entry_meta_values               = \SAIFGS\Classes\SAIFGS_Contact_Form_7_Meta_Query::saifgs_get_meta( $entry['id'] );
+					$entries[ $index ]['meta']       = $entry_meta_values;
+					$entries[ $index ]['fieldsmeta'] = $form_fields;
+				}
 			}
 
-			$total_query = $wpdb->prepare("SELECT COUNT(id) FROM {$wpdb->prefix}saifgs_contact_form_7_entries WHERE form_id = %d", $form_id);
-			$total = $wpdb->get_var($total_query);
-
-			return new \WP_REST_Response([
-				'data' => $entries,
-				'total' => (int) $total,
-			], 200);
-			// @codingStandardsIgnoreEnd
+			return new \WP_REST_Response(
+				array(
+					'data'  => $entries,
+					'total' => (int) $total,
+				),
+				200
+			);
 		}
 	}
 }
