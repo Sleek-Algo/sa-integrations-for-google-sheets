@@ -264,7 +264,7 @@ if ( ! class_exists( '\SAIFGS\Settings\SAIFGS_General_Settings' ) ) {
 				'saifgs_general_settings',
 				'saifgs_supported_plugins',
 				array(
-					'default'      => array(
+					'default'           => array(
 						array(
 							'id'                  => '',
 							'title'               => '',
@@ -272,9 +272,10 @@ if ( ! class_exists( '\SAIFGS\Settings\SAIFGS_General_Settings' ) ) {
 							'availability_status' => '',
 						),
 					),
-					'single'       => true,
-					'type'         => 'array',
-					'show_in_rest' => array(
+					'sanitize_callback' => array( $this, 'saifgs_sanitize_supported_plugins' ),
+					'single'            => true,
+					'type'              => 'array',
+					'show_in_rest'      => array(
 						'schema' => array(
 							'items' => array(
 								'type'       => 'object',
@@ -297,6 +298,52 @@ if ( ! class_exists( '\SAIFGS\Settings\SAIFGS_General_Settings' ) ) {
 					),
 				)
 			);
+		}
+
+		/**
+		 * Sanitizes the supported plugins setting.
+		 *
+		 * @param mixed $value The unsanitized setting value.
+		 * @return array The sanitized array of supported plugins.
+		 */
+		public function saifgs_sanitize_supported_plugins( $value ) {
+			if ( ! is_array( $value ) ) {
+				return array(
+					array(
+						'id'                  => '',
+						'title'               => '',
+						'usability_status'    => '',
+						'availability_status' => '',
+					),
+				);
+			}
+
+			$sanitized = array();
+
+			foreach ( $value as $plugin ) {
+				$sanitized_plugin = array();
+
+				// Sanitize each field.
+				$sanitized_plugin['id'] = isset( $plugin['id'] )
+					? sanitize_text_field( $plugin['id'] )
+					: '';
+
+				$sanitized_plugin['title'] = isset( $plugin['title'] )
+					? sanitize_text_field( $plugin['title'] )
+					: '';
+
+				$sanitized_plugin['usability_status'] = isset( $plugin['usability_status'] )
+					? sanitize_text_field( $plugin['usability_status'] )
+					: '';
+
+				$sanitized_plugin['availability_status'] = isset( $plugin['availability_status'] )
+					? sanitize_text_field( $plugin['availability_status'] )
+					: '';
+
+				$sanitized[] = $sanitized_plugin;
+			}
+
+			return $sanitized;
 		}
 	}
 }

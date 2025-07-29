@@ -50,12 +50,10 @@ if ( ! class_exists( '\SAIFGS\Integrations\ContactForm7\SAIFGS_Listner_CF7' ) ) 
 				// Access the file upload data.
 				if ( isset( $_FILES[ $file_input_name ] ) ) {
 					// Sanitize the input field name (optional if the index is validated elsewhere).
-					$file_input_name_sanitized = isset( $file_input_name ) ? sanitize_text_field( $file_input_name ) : '';
+					$file_input_name_sanitized = isset( $file_input_name ) ? sanitize_text_field( wp_unslash( $file_input_name ) ) : '';
 
 					// Unslash and properly extract the $_FILES data.
-					// @codingStandardsIgnoreStart
-					$file = $_FILES[ $file_input_name ];
-					// @codingStandardsIgnoreEnd
+					$file = wp_unslash( $_FILES[ $file_input_name ] );
 
 					// Ensure the file upload has no errors.
 					if ( isset( $file['error'] ) && UPLOAD_ERR_OK !== $file['error'] ) {
@@ -206,8 +204,7 @@ if ( ! class_exists( '\SAIFGS\Integrations\ContactForm7\SAIFGS_Listner_CF7' ) ) 
 		 * @return int The ID of the last inserted entry.
 		 */
 		public function saifgs_insert_data_to_database( $form_id, $posted_data ) {
-			// @codingStandardsIgnoreStart
-            global $wpdb;
+			global $wpdb;
 
 			// Define the table names.
 			$entries_table = $wpdb->prefix . 'saifgs_contact_form_7_entries';
@@ -221,11 +218,11 @@ if ( ! class_exists( '\SAIFGS\Integrations\ContactForm7\SAIFGS_Listner_CF7' ) ) 
 
 			// Prepare the data to insert into the entries table.
 			$entry_data = array(
-				'form_id' => absint($form_id),
+				'form_id' => absint( $form_id ),
 			);
 
 			// Insert the entry into the entries table and check for errors.
-			$inserted = $wpdb->insert( $entries_table, $entry_data );
+			$inserted = $wpdb->insert( $entries_table, $entry_data ); // phpcs:ignore WordPress.DB.DirectDatabaseQuery.DirectQuery -- Custom table requires direct access.
 
 			if ( false === $inserted ) {
 				// Log the error if needed (optional).
@@ -239,7 +236,7 @@ if ( ! class_exists( '\SAIFGS\Integrations\ContactForm7\SAIFGS_Listner_CF7' ) ) 
 			foreach ( $posted_data as $key => $value ) {
 				// Sanitize the meta key and value.
 				$meta_value = is_array( $value ) ? implode( ', ', array_map( 'sanitize_text_field', $value ) ) : sanitize_text_field( $value );
-		
+
 				$meta_data = array(
 					'entry_id'   => $entry_id,
 					'meta_key'   => $key,
@@ -252,7 +249,6 @@ if ( ! class_exists( '\SAIFGS\Integrations\ContactForm7\SAIFGS_Listner_CF7' ) ) 
 
 			// Return the last inserted entry ID.
 			return $entry_id;
-            // @codingStandardsIgnoreEnd
 		}
 
 		/**
@@ -328,18 +324,16 @@ if ( ! class_exists( '\SAIFGS\Integrations\ContactForm7\SAIFGS_Listner_CF7' ) ) 
 
 					// Insert the row mapping into the integration rows table.
 					$table_name = $wpdb->prefix . 'saifgs_integrations_rows';
-					// @codingStandardsIgnoreStart
-                    $wpdb->insert(
+					$wpdb->insert(
 						$table_name,
 						array(
-							'integration_id'   => $integration['id'],
-							'sheet_id'         => $spreadsheet_id,
-							'sheet_tab_id'     => $sheet_tab_id,
+							'integration_id'      => $integration['id'],
+							'sheet_id'            => $spreadsheet_id,
+							'sheet_tab_id'        => $sheet_tab_id,
 							'sheet_tab_row_range' => $sheet_tab_row_id,
-							'source_row_id'    => $get_entry_id,
+							'source_row_id'       => $get_entry_id,
 						)
 					);
-                    // @codingStandardsIgnoreEnd
 
 				} catch ( \Exception $e ) {
 					// Return an error response if the Google API call fails.
@@ -358,14 +352,12 @@ if ( ! class_exists( '\SAIFGS\Integrations\ContactForm7\SAIFGS_Listner_CF7' ) ) 
 		 * @return array|false An array of integration data or false on failure.
 		 */
 		public function saifgs_fetch_integration_data( $form_id, $sheet_tab_id, $form_type ) {
-
-			// @codingStandardsIgnoreStart
-            global $wpdb;
+			global $wpdb;
 
 			// Define the table name.
-			$table_name = $wpdb->prefix . 'saifgs_integrations';
-			$plugin_id  = 'contact_form_7';
-			$source_id  = absint( $form_id );
+			$table_name   = $wpdb->prefix . 'saifgs_integrations';
+			$plugin_id    = 'contact_form_7';
+			$source_id    = absint( $form_id );
 			$sheet_tab_id = sanitize_text_field( $sheet_tab_id );
 
 			// Prepare the SQL query using a prepared statement.
@@ -395,10 +387,10 @@ if ( ! class_exists( '\SAIFGS\Integrations\ContactForm7\SAIFGS_Listner_CF7' ) ) 
 				foreach ( $results as $result ) {
 					$maping_data = maybe_unserialize( $result->google_sheet_column_map );
 					foreach ( $maping_data as $data ) {
-						if( 'update_form' === $form_type ){
+						if ( 'update_form' === $form_type ) {
 							if ( isset( $data->source_filed_index ) ) {
 								$integration_data[ $data->google_sheet_index ] = $data->source_filed_index;
-								
+
 								// Include additional validation toggle if available.
 								if ( isset( $data->source_filed_index_toggle ) ) {
 									$integration_data[] = array(
@@ -407,7 +399,7 @@ if ( ! class_exists( '\SAIFGS\Integrations\ContactForm7\SAIFGS_Listner_CF7' ) ) 
 									);
 								}
 							}
-						}else{
+						} else {
 							if ( isset( $data->source_filed_index ) ) {
 								$integration_data[ $data->google_sheet_index ] = $data->source_filed_index;
 							}
@@ -418,7 +410,6 @@ if ( ! class_exists( '\SAIFGS\Integrations\ContactForm7\SAIFGS_Listner_CF7' ) ) 
 			} else {
 				return false;
 			}
-            // @codingStandardsIgnoreEnd
 		}
 	}
 }

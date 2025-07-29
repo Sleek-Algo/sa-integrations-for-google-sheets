@@ -18,8 +18,8 @@
 		"test:e2e": "wp-scripts test-e2e",
 		"test:unit": "wp-scripts test-unit-js",
 		"translate": "wp i18n make-pot .. ../languages/sa-integrations-for-google-sheets.pot",
-		"wpcs": "cd .. && composer exec phpcs -- --standard=WordPress --extensions=php includes/classes/class-saifgs-google-apis-authenticator.php",
-		"wpcs:fix": "cd .. && composer exec phpcbf -- --standard=WordPress --extensions=php includes/classes/class-saifgs-google-apis-authenticator.php",
+		"wpcs": "cd .. && composer exec phpcs -- --standard=WordPress --extensions=php includes/integrations/contact-form-7/class-saifgs-listner-cf7.php",
+		"wpcs:fix": "cd .. && composer exec phpcbf -- --standard=WordPress --extensions=php includes/integrations/contact-form-7/class-saifgs-listner-cf7.php",
 		"build:development": "cd .. && composer run setup-development",
 		"build:production": "cd .. && composer run setup-production",
 		"build:zip": "cross-env CREATE_ZIP=yes wp-scripts build"
