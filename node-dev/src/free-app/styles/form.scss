@@ -15,20 +15,9 @@
 // Edit Integration
 .edit-google-sheet {
     label {
-        // min-width: 200px;
         max-width: 170px;
         width: 100%;
     }
-    // .saifgs-select-single {
-    //     height: 40px;
-    // }
-    // .saifgs-form-item .saifgs-form-item-control-input {
-    //     min-height: 40px;
-    // }
-    // .saifgs-segmented .saifgs-segmented-item-label {
-    //     min-height: 40px;
-    //     line-height: 40px;
-    // }
 }
 
 // Sourcedata
@@ -60,15 +49,9 @@
 }
 
 @media only screen and (max-width: 1506.5px) {
-    .edit-google-sheet .saifgs-segmented-item {
-        // min-width: 200px !important;
-    }
 }
 
 @media only screen and (max-width: 1216.5px) {
-    .edit-google-sheet .saifgs-segmented-item {
-        // min-width: 150px !important;
-    }
     #saifgs_source_plugin {
         width: 100% !important;
         overflow: auto;

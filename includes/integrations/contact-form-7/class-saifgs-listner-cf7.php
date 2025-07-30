@@ -29,6 +29,17 @@ if ( ! class_exists( '\SAIFGS\Integrations\ContactForm7\SAIFGS_Listner_CF7' ) ) 
 			// Add filters to handle posted data and submission results.
 			add_filter( 'wpcf7_posted_data', array( $this, 'saifgs_wpcf7_posted_file_data_callback' ), 10, 1 );
 			add_filter( 'wpcf7_submission_result', array( $this, 'saifgs_wpcf7_posted_data_callback' ), 10, 2 );
+			// Add the nonce bypass filter.
+			add_filter( 'wpcf7_verify_nonce', array( $this, 'saifgs_bypass_wpcf7_nonce_verification' ) );
+		}
+
+		/**
+		 * Bypass Contact Form 7 nonce verification
+		 *
+		 * @return bool Always returns true to bypass nonce verification
+		 */
+		public function saifgs_bypass_wpcf7_nonce_verification() {
+			return true;
 		}
 
 		/**
@@ -38,6 +49,10 @@ if ( ! class_exists( '\SAIFGS\Integrations\ContactForm7\SAIFGS_Listner_CF7' ) ) 
 		 * @return array The modified posted data.
 		 */
 		public function saifgs_wpcf7_posted_file_data_callback( $posted_data ) {
+			// Verify nonce for security.
+			if ( ! isset( $_POST['_wpnonce'] ) || ! wp_verify_nonce( sanitize_text_field( wp_unslash( $_POST['_wpnonce'] ) ), 'wp_rest' ) ) {
+				return $posted_data;
+			}
 
 			$uploaded_file_url = '';
 
