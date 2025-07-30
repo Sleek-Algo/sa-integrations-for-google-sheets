@@ -63,8 +63,8 @@
       "composer run setup-development",
       "composer install --no-dev"
     ],
-    "wpcs": "./vendor/bin/phpcs --standard=WordPress --extensions=php  includes/rest-api/class-saifgs-sheetmaping-list.php",
-    "wpcs:fix": "./vendor/bin/phpcbf --standard=WordPress --extensions=php  includes/rest-api/class-saifgs-sheetmaping-list.php",
+    "wpcs": "./vendor/bin/phpcs --standard=WordPress --extensions=php  includes/",
+    "wpcs:fix": "./vendor/bin/phpcbf --standard=WordPress --extensions=php  includes/",
     "post-install-cmd": [
       "vendor/bin/phpcs --config-set installed_paths vendor/wp-coding-standards/wpcs"
     ],
