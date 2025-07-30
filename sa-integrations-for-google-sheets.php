@@ -6,7 +6,7 @@
  * Description: This plugin connects your WordPress website with Google Sheets, enabling automatic synchronization of form submissions and WooCommerce order data.
  * Version: 1.0.0
  * Requires at least: 5.1
- * Requires PHP: 5.6
+ * Requires PHP: 7.0
  * Author: SleekAlgo
  * Author URI: https://www.sleekalgo.com/
  * License: GPL v2 or later
@@ -68,9 +68,7 @@ register_activation_hook( __FILE__, [\SAIFGS\BootStrap\SAIFGS_Activate::get_inst
 
 
 function saifgs_init_plugin() {
-    $active_plugins = apply_filters( 'active_plugins', get_option( 'active_plugins' ) );
     \SAIFGS\Bootstrap\SAIFGS_App::get_instance();
     do_action( 'saifgs_plugin_loaded' );
 }
-
 add_action( 'plugins_loaded', 'saifgs_init_plugin', 30 );

@@ -18,8 +18,9 @@
 		"test:e2e": "wp-scripts test-e2e",
 		"test:unit": "wp-scripts test-unit-js",
 		"translate": "wp i18n make-pot .. ../languages/sa-integrations-for-google-sheets.pot",
-		"wpcs": "cd .. && composer exec phpcs -- --standard=WordPress --extensions=php includes/rest-api/class-saifgs-sheetmaping-list.php",
-		"wpcs:fix": "cd .. && composer exec phpcbf -- --standard=WordPress --extensions=php includes/rest-api/class-saifgs-sheetmaping-list.php",
+		"wpcs": "cd .. && composer exec phpcs -- --standard=WordPress --extensions=php includes/rest-api/class-saifgs-contact-form-7-entries-api.php",
+		"wpcs:fix": "cd .. && composer exec phpcbf -- --standard=WordPress --extensions=php includes/rest-api/class-saifgs-contact-form-7-entries-api.php",
+		"wpcs:check": "wp plugin check sa-integrations-for-google-sheets --exclude-files=.gitignore --exclude-directories=libraries --categories=general,plugin_repo,security,performance,accessibility",
 		"build:development": "cd .. && composer run setup-development",
 		"build:production": "cd .. && composer run setup-production",
 		"build:zip": "cross-env CREATE_ZIP=yes wp-scripts build"
