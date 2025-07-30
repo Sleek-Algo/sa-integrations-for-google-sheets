@@ -144,11 +144,11 @@ if ( ! class_exists( '\SAIFGS\RestApi\SAIFGS_Sheetmaping_List' ) ) {
 
 			// Generate cache key based on all parameters.
 			$cache_key   = 'saifgs_integration_data_' . md5(
-				$integrigration_api_limit,
-				$integration_api_current_page,
-				$filter_title,
-				$filter_start_date,
-				$filter_end_date,
+				$integrigration_api_limit . '_' .
+				$integration_api_current_page . '_' .
+				$filter_title . '_' .
+				$filter_start_date . '_' .
+				$filter_end_date . '_' .
 				$plugin_filter
 			);
 			$cache_group = 'saifgs_integrations';
