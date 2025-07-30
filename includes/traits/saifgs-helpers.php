@@ -54,11 +54,31 @@ if ( ! trait_exists( '\SAIFGS\Traits\SAIFGS_Helpers' ) ) {
 		 */
 		public function saifgs_get_integration_data( $plugin, $form_id ) {
 			global $wpdb;
-			$table_name = $wpdb->prefix . 'saifgs_integrations';
-            // @codingStandardsIgnoreStart
-			$sql        = $wpdb->prepare( "SELECT * FROM $table_name WHERE source_id = %d AND Plugin_id = %s", $form_id, $plugin );
-			$results    = $wpdb->get_results( $sql );
-            // @codingStandardsIgnoreEnd
+
+			// Generate cache key.
+			$cache_key   = 'saifgs_integration_' . $plugin . '_' . $form_id;
+			$cache_group = 'saifgs_integrations';
+
+			// Try to get cached data first.
+			$integration_data = wp_cache_get( $cache_key, $cache_group );
+
+			if ( false !== $integration_data ) {
+				return $integration_data;
+			}
+
+			// Query database if not found in cache.
+			$results = $wpdb->get_results( // phpcs:ignore WordPress.DB.DirectDatabaseQuery.DirectQuery, WordPress.DB.DirectDatabaseQuery.NoCaching
+				$wpdb->prepare(
+					"SELECT `id`, `google_work_sheet_id`, `google_sheet_tab_id`, 
+						`google_sheet_column_range`, `google_sheet_column_map` 
+					FROM `{$wpdb->prefix}saifgs_integrations` 
+					WHERE `source_id` = %d AND `Plugin_id` = %s",
+					$form_id,
+					$plugin
+				)
+			);
+
+			$integration_data = false;
 
 			if ( $results ) {
 				$integration_data = array();
@@ -70,6 +90,9 @@ if ( ! trait_exists( '\SAIFGS\Traits\SAIFGS_Helpers' ) ) {
 						'google_sheet_column_range' => $result->google_sheet_column_range,
 						'google_sheet_column_map'   => maybe_unserialize( $result->google_sheet_column_map ),
 					);
+
+					// Cache the results for 1 hour (adjust as needed).
+					wp_cache_set( $cache_key, $integration_data, $cache_group, HOUR_IN_SECONDS );
 				}
 				return $integration_data;
 			} else {

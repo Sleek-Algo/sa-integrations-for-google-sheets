@@ -9,7 +9,7 @@ msgstr ""
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
-"POT-Creation-Date: 2025-07-14T13:05:57+00:00\n"
+"POT-Creation-Date: 2025-07-30T10:23:58+00:00\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "X-Generator: WP-CLI 2.12.0\n"
 "X-Domain: sa-integrations-for-google-sheets\n"
@@ -41,19 +41,19 @@ msgstr ""
 msgid "https://www.sleekalgo.com/"
 msgstr ""
 
-#: includes/integrations/contact-form-7/class-saifgs-listner-cf7.php:102
+#: includes/integrations/contact-form-7/class-saifgs-listner-cf7.php:97
 msgid "Failed to move uploaded file."
 msgstr ""
 
-#: includes/integrations/contact-form-7/class-saifgs-listner-cf7.php:277
+#: includes/integrations/contact-form-7/class-saifgs-listner-cf7.php:271
 msgid "Missing required integration details."
 msgstr ""
 
-#: includes/integrations/contact-form-7/class-saifgs-listner-cf7.php:293
+#: includes/integrations/contact-form-7/class-saifgs-listner-cf7.php:287
 msgid "No data available for Google Sheets integration map data."
 msgstr ""
 
-#: includes/integrations/contact-form-7/class-saifgs-listner-cf7.php:303
+#: includes/integrations/contact-form-7/class-saifgs-listner-cf7.php:297
 msgid "No data available for Google Sheets integration."
 msgstr ""
 
@@ -61,12 +61,12 @@ msgstr ""
 msgid "Invalid Google Sheet integration settings."
 msgstr ""
 
-#: includes/integrations/woo-commerce/class-saifgs-listener-woo-commerce.php:192
+#: includes/integrations/woo-commerce/class-saifgs-listener-woo-commerce.php:205
 msgid "Invalid or missing input data."
 msgstr ""
 
 #. translators: %s will be replaced with the error message.
-#: includes/integrations/woo-commerce/class-saifgs-listener-woo-commerce.php:243
+#: includes/integrations/woo-commerce/class-saifgs-listener-woo-commerce.php:253
 #, php-format
 msgid "Failed to insert data into Google Sheets: %s"
 msgstr ""
@@ -80,12 +80,12 @@ msgid "No valid data mapped to Google Sheets columns. Please check your field ma
 msgstr ""
 
 #. translators: %s will be replaced with the error message.
-#: includes/integrations/wp-forms/class-saifgs-listener-wp-forms.php:129
+#: includes/integrations/wp-forms/class-saifgs-listener-wp-forms.php:126
 #, php-format
 msgid "Failed to insert data into Google Sheets:  %s"
 msgstr ""
 
-#: includes/integrations/wp-forms/class-saifgs-listener-wp-forms.php:180
+#: includes/integrations/wp-forms/class-saifgs-listener-wp-forms.php:177
 msgid "Form data is empty or incomplete. Cannot process Google Sheets integration."
 msgstr ""
 
@@ -119,17 +119,17 @@ msgstr ""
 msgid "Form ID is required."
 msgstr ""
 
-#: includes/rest-api/class-saifgs-integration-edit-form-api.php:97
+#: includes/rest-api/class-saifgs-integration-edit-form-api.php:115
 msgid "No integration found for the provided form ID."
 msgstr ""
 
-#: includes/rest-api/class-saifgs-integration-edit-form-api.php:149
+#: includes/rest-api/class-saifgs-integration-edit-form-api.php:167
 #: includes/rest-api/class-saifgs-integration-google-sheet-tab.php:152
 msgid "No data found in the specified range."
 msgstr ""
 
 #. translators: %s will be replaced with the error message.
-#: includes/rest-api/class-saifgs-integration-edit-form-api.php:204
+#: includes/rest-api/class-saifgs-integration-edit-form-api.php:222
 #, php-format
 msgid "Failed to fetch Google Sheet data: %s"
 msgstr ""
@@ -138,12 +138,16 @@ msgstr ""
 msgid "Missing required fields."
 msgstr ""
 
-#: includes/rest-api/class-saifgs-integration-form-api.php:148
+#: includes/rest-api/class-saifgs-integration-form-api.php:146
 msgid "Failed to save integration."
 msgstr ""
 
-#: includes/rest-api/class-saifgs-integration-form-api.php:152
+#: includes/rest-api/class-saifgs-integration-form-api.php:150
 msgid "Integration saved successfully."
+msgstr ""
+
+#: includes/rest-api/class-saifgs-integration-google-sheet-tab.php:101
+msgid "Missing required parameters: Google Sheet ID or range."
 msgstr ""
 
 #. translators: %s will be replaced with the error message.
@@ -168,7 +172,7 @@ msgstr ""
 msgid "Failed to fetch Google Sheets: %s"
 msgstr ""
 
-#: includes/rest-api/class-saifgs-integration-plugin-list-api.php:98
+#: includes/rest-api/class-saifgs-integration-plugin-list-api.php:104
 msgid "An error occurred while fetching plugin data."
 msgstr ""
 
@@ -180,27 +184,27 @@ msgstr ""
 msgid "Invalid integration ID provided."
 msgstr ""
 
-#: includes/rest-api/class-saifgs-sheetmaping-list.php:117
+#: includes/rest-api/class-saifgs-sheetmaping-list.php:114
 msgid "An error occurred while deleting the integration."
 msgstr ""
 
-#: includes/rest-api/class-saifgs-sheetmaping-list.php:119
+#: includes/rest-api/class-saifgs-sheetmaping-list.php:116
 msgid "No integration found with the provided ID."
 msgstr ""
 
-#: includes/rest-api/class-saifgs-sheetmaping-list.php:121
+#: includes/rest-api/class-saifgs-sheetmaping-list.php:118
 msgid "Integration deleted successfully."
 msgstr ""
 
-#: includes/rest-api/class-saifgs-sheetmaping-list.php:153
+#: includes/rest-api/class-saifgs-sheetmaping-list.php:167
 msgid "The start date is invalid."
 msgstr ""
 
-#: includes/rest-api/class-saifgs-sheetmaping-list.php:156
+#: includes/rest-api/class-saifgs-sheetmaping-list.php:170
 msgid "The end date is invalid."
 msgstr ""
 
-#: includes/rest-api/class-saifgs-sheetmaping-list.php:161
+#: includes/rest-api/class-saifgs-sheetmaping-list.php:175
 msgid "Pagination parameters must be positive integers."
 msgstr ""
 
