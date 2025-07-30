@@ -69,17 +69,31 @@ if ( ! class_exists( '\SAIFGS\Integrations\WooCommerce\SAIFGS_Listener_Woo_Comme
 		public function saifgs_get_integration_data() {
 			global $wpdb;
 
-            // @codingStandardsIgnoreStart
-			$table_name = $wpdb->prefix . 'saifgs_integrations';
+			// Set cache key and group.
+			$cache_key   = 'saifgs_woocommerce_integrations';
+			$cache_group = 'saifgs_integrations';
 
-			// Use a prepared statement to fetch results securely.
-			$results = $wpdb->get_results(
-				$wpdb->prepare(
-					"SELECT id, title, plugin_id, source_id, order_status, google_work_sheet_id, google_sheet_tab_id, google_sheet_column_map, google_sheet_column_range, disable_integration FROM $table_name WHERE plugin_id = %s",
-					'woocommerce'
-				)
-			);
-            // @codingStandardsIgnoreEnd
+			// Try to get cached data first.
+			$results = wp_cache_get( $cache_key, $cache_group );
+
+			// If not found in cache, fetch from database.
+			if ( false === $results ) {
+
+				// phpcs:ignore WordPress.DB.DirectDatabaseQuery.DirectQuery
+				$results = $wpdb->get_results(
+					$wpdb->prepare(
+						"SELECT `id`, `title`, `plugin_id`, `source_id`, `order_status`, 
+						`google_work_sheet_id`, `google_sheet_tab_id`, `google_sheet_column_map`, 
+						`google_sheet_column_range`, `disable_integration` 
+					FROM `{$wpdb->prefix}saifgs_integrations` 
+					WHERE `plugin_id` = %s",
+						'woocommerce'
+					)
+				);
+
+				// Cache the results for 12 hours (adjust as needed).
+				wp_cache_set( $cache_key, $results, $cache_group, 12 * HOUR_IN_SECONDS );
+			}
 
 			return $results;
 		}
@@ -183,7 +197,6 @@ if ( ! class_exists( '\SAIFGS\Integrations\WooCommerce\SAIFGS_Listener_Woo_Comme
 		 * @param array  $integration_data   Integration mapping data.
 		 * @param string $status             The status of the operation.
 		 *
-		 * @throws \InvalidArgumentException If input data is invalid or missing.
 		 * @throws \Exception                If the insertion process fails.
 		 */
 		private function saifgs_insert_data_to_google_sheet( $data, $google_work_sheet_id, $google_sheet_tab_id, $order_id, $range, $integration_data, $status ) {
@@ -225,19 +238,16 @@ if ( ! class_exists( '\SAIFGS\Integrations\WooCommerce\SAIFGS_Listener_Woo_Comme
 				$sheet_tab_row_id = $response['updates']['updatedRange'];
 
 				// Insert the row mapping into the integration rows table.
-				$table_name = $wpdb->prefix . 'saifgs_integrations_rows';
-				// @codingStandardsIgnoreStart
-				$wpdb->insert(
-					$table_name,
+				$wpdb->insert( // phpcs:ignore WordPress.DB.DirectDatabaseQuery.DirectQuery
+					$wpdb->prefix . 'saifgs_integrations_rows',
 					array(
-						'integration_id'   => $integration_data->id,
-						'sheet_id'         => $google_work_sheet_id,
-						'sheet_tab_id'     => $google_sheet_tab_id,
+						'integration_id'      => $integration_data->id,
+						'sheet_id'            => $google_work_sheet_id,
+						'sheet_tab_id'        => $google_sheet_tab_id,
 						'sheet_tab_row_range' => $sheet_tab_row_id,
-						'source_row_id'    => $order_id,
+						'source_row_id'       => $order_id,
 					)
 				);
-				// @codingStandardsIgnoreEnd
 			} catch ( \Exception $e ) {
 				// translators: %s will be replaced with the error message.
 				throw new \Exception( esc_html( sprintf( __( 'Failed to insert data into Google Sheets: %s', 'sa-integrations-for-google-sheets' ), $e->getMessage() ) ) );

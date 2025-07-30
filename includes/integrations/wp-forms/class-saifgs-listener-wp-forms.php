@@ -110,19 +110,16 @@ if ( ! class_exists( '\SAIFGS\Integrations\WPForms\SAIFGS_Listener_WP_Forms ' ) 
 					$sheet_tab_row_id = $response['updates']['updatedRange'];
 
 					// Insert the row mapping into the integration rows table.
-					$table_name = $wpdb->prefix . 'saifgs_integrations_rows';
-					// @codingStandardsIgnoreStart
-					$wpdb->insert(
-						$table_name,
+					$wpdb->insert( // phpcs:ignore WordPress.DB.DirectDatabaseQuery.DirectQuery
+						$wpdb->prefix . 'saifgs_integrations_rows',
 						array(
-							'integration_id'   => $$integration['id'],
-							'sheet_id'         => $spreadsheet_id,
-							'sheet_tab_id'     => $sheet_tab_id,
+							'integration_id'      => $$integration['id'],
+							'sheet_id'            => $spreadsheet_id,
+							'sheet_tab_id'        => $sheet_tab_id,
 							'sheet_tab_row_range' => $sheet_tab_row_id,
-							'source_row_id'    => $entry_id,
+							'source_row_id'       => $entry_id,
 						)
 					);
-					// @codingStandardsIgnoreEnd
 
 				} catch ( \Exception $e ) {
 					// translators: %s will be replaced with the error message.
@@ -192,24 +189,38 @@ if ( ! class_exists( '\SAIFGS\Integrations\WPForms\SAIFGS_Listener_WP_Forms ' ) 
 		 */
 		public function saifgs_fetch_integration_data( $form_id, $sheet_tab_id, $form_type ) {
 			global $wpdb;
-			$table_name   = $wpdb->prefix . 'saifgs_integrations';
+
 			$plugin_id    = 'wpforms';
 			$source_id    = intval( $form_id );
 			$sheet_tab_id = sanitize_text_field( $sheet_tab_id ); // Sanitize tab ID.
 
-			// @codingStandardsIgnoreStart
-			// Prepare the query securely using $wpdb->prepare to prevent SQL injection.
-			$sql = $wpdb->prepare(
-				"SELECT google_sheet_column_map FROM $table_name WHERE plugin_id = %s AND source_id = %d AND google_sheet_tab_id = %s",
-				$plugin_id,
-				$source_id,
-				$sheet_tab_id
+			// Generate unique cache key.
+			$cache_key   = 'saifgs_wpforms_integration_' . $source_id . '_' . $sheet_tab_id . '_' . $form_type;
+			$cache_group = 'saifgs_integrations';
+
+			// Try to get cached data first.
+			$integration_data = wp_cache_get( $cache_key, $cache_group );
+
+			if ( false !== $integration_data ) {
+				return $integration_data;
+			}
+
+			// Execute the query if not found in cache.
+			$results = $wpdb->get_results( // phpcs:ignore WordPress.DB.DirectDatabaseQuery.DirectQuery
+				$wpdb->prepare(
+					"SELECT `google_sheet_column_map` 
+					FROM `{$wpdb->prefix}saifgs_integrations` 
+					WHERE `plugin_id` = %s 
+					AND `source_id` = %d 
+					AND `google_sheet_tab_id` = %s",
+					$plugin_id,
+					$source_id,
+					$sheet_tab_id
+				)
 			);
 
-			// Execute the query.
-			$results = $wpdb->get_results( $sql );
+			$integration_data = false;
 
-            // @codingStandardsIgnoreEnd
 			if ( ! empty( $results ) ) {
 				$integration_data = array();
 				foreach ( $results as $result ) {
@@ -232,6 +243,9 @@ if ( ! class_exists( '\SAIFGS\Integrations\WPForms\SAIFGS_Listener_WP_Forms ' ) 
 							}
 						}
 					}
+
+					// Cache the results for 1 hour (adjust as needed).
+					wp_cache_set( $cache_key, $integration_data, $cache_group, HOUR_IN_SECONDS );
 				}
 				return $integration_data;
 			} else {

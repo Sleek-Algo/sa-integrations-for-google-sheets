@@ -249,19 +249,16 @@ if ( ! class_exists( '\SAIFGS\Integrations\GravityForms\SAIFGS_Listener_Gravity_
 				$sheet_tab_row_id = $response['updates']['updatedRange'];
 
 				// Insert the row mapping into the integration rows table.
-				$table_name = $wpdb->prefix . 'saifgs_integrations_rows';
-				// @codingStandardsIgnoreStart
-				$wpdb->insert(
-					$table_name,
+				$wpdb->insert(// phpcs:ignore WordPress.DB.DirectDatabaseQuery.DirectQuery
+					$wpdb->prefix . 'saifgs_integrations_rows',
 					array(
-						'integration_id'   => $integration['id'],
-						'sheet_id'         => $spreadsheet_id,
-						'sheet_tab_id'     => $sheet_tab_id,
+						'integration_id'      => $integration['id'],
+						'sheet_id'            => $spreadsheet_id,
+						'sheet_tab_id'        => $sheet_tab_id,
 						'sheet_tab_row_range' => $sheet_tab_row_id,
-						'source_row_id'    => $entry_id,
+						'source_row_id'       => $entry_id,
 					)
 				);
-				// @codingStandardsIgnoreEnd
 
 			} catch ( \Exception $e ) {
 				// Return an error response if the Google API call fails.
@@ -278,59 +275,71 @@ if ( ! class_exists( '\SAIFGS\Integrations\GravityForms\SAIFGS_Listener_Gravity_
 		 * @return array|false          An array of integration data, or false if no data found.
 		 */
 		public function saifgs_fetch_integration_data( $form_id, $sheet_tab_id, $form_type ) {
+			global $wpdb;
 
-            // @codingStandardsIgnoreStart
-            global $wpdb;
-
-            // Define the database table name for integrated data.
-            $table_name = $wpdb->prefix . 'saifgs_integrations';
-            $plugin_id = 'gravityforms'; // Plugin identifier for Gravity Forms.
-            $source_id = intval( $form_id ); // The form ID to fetch integration data for.
+			// Define the database table name for integrated data.
+			$plugin_id    = 'gravityforms'; // Plugin identifier for Gravity Forms.
+			$source_id    = intval( $form_id ); // The form ID to fetch integration data for.
 			$sheet_tab_id = sanitize_text_field( $sheet_tab_id );
-    		$form_type    = sanitize_text_field( $form_type );
-            
-			// Prepare the SQL query with placeholders to prevent SQL injection.
-			$sql = $wpdb->prepare(
-				"SELECT google_sheet_column_map FROM $table_name WHERE plugin_id = %s AND source_id = %d AND google_sheet_tab_id = %s",
-				$plugin_id,
-				$form_id,
-				$sheet_tab_id
-			);
+			$form_type    = sanitize_text_field( $form_type );
+
+			// Generate a unique cache key based on all parameters.
+			$cache_key = 'saifgs_integration_' . $plugin_id . '_' . $form_id . '_' . $sheet_tab_id . '_' . $form_type;
+
+			// Try to get cached data first.
+			$integration_data = wp_cache_get( $cache_key, 'saifgs_integrations' );
+
+			if ( false !== $integration_data ) {
+				return $integration_data;
+			}
 
 			// Execute the query and fetch results.
-			$results = $wpdb->get_results( $sql );
+			$results = $wpdb->get_results( // phpcs:ignore WordPress.DB.DirectDatabaseQuery.DirectQuery
+				$wpdb->prepare(
+					"SELECT `google_sheet_column_map` 
+					FROM `{$wpdb->prefix}saifgs_integrations`
+					WHERE `plugin_id` = %s 
+					AND `source_id` = %d 
+					AND `google_sheet_tab_id` = %s",
+					$plugin_id,
+					$form_id,
+					$sheet_tab_id
+				)
+			);
 
-            // Check if any results were found.
-            if ( is_array( $results) && count( $results ) > 0 ) {
-                $integration_data = array();
-                
-                // Loop through the results and process the column mapping data.
-                foreach ($results as $result) {
-                    $mapping_data  = maybe_unserialize($result->google_sheet_column_map);
+			$integration_data = false;
+
+			// Check if any results were found.
+			if ( is_array( $results ) && count( $results ) > 0 ) {
+				$integration_data = array();
+
+				// Loop through the results and process the column mapping data.
+				foreach ( $results as $result ) {
+					$mapping_data = maybe_unserialize( $result->google_sheet_column_map );
 					if ( is_array( $mapping_data ) ) {
 
-                    	// Map the Google Sheet column indexes to the form field indexes.
-						foreach( $mapping_data  as $data ){
+						// Map the Google Sheet column indexes to the form field indexes.
+						foreach ( $mapping_data  as $data ) {
 							// Ensure the source field index is set; otherwise, default to an empty string.
 							$data->source_filed_index = isset( $data->source_filed_index ) ? sanitize_text_field( $data->source_filed_index ) : '';
-							if( $form_type === 'update' ){
+							if ( 'update' === $form_type ) {
 								$integration_data[] = array(
-									'valid'                  => isset( $data->source_filed_index_toggle ) ? (bool) $data->source_filed_index_toggle : false,
+									'valid' => isset( $data->source_filed_index_toggle ) ? (bool) $data->source_filed_index_toggle : false,
 									$data->google_sheet_index => $data->source_filed_index,
 								);
-					
-							}else{
+
+							} else {
 								$integration_data[ $data->google_sheet_index ] = $data->source_filed_index;
 							}
 						}
 					}
-                }
-                return $integration_data;
-            } else {
-				// Return false if no integration data was found.
-                return false;
-            }
-            // @codingStandardsIgnoreEnd
+				}
+
+				// Cache the results for 1 hour (adjust as needed).
+				wp_cache_set( $cache_key, $integration_data, 'saifgs_integrations', HOUR_IN_SECONDS );
+
+				return $integration_data;
+			}
 		}
 	}
 }

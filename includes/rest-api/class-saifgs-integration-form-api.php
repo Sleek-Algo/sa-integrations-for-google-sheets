@@ -106,29 +106,28 @@ if ( ! class_exists( '\SAIFGS\RestApi\SAIFGS_Integration_Form_API' ) ) {
 				$first_index     = reset( $sheet_indices );
 				$last_index      = end( $sheet_indices );
 				$column_range    = preg_replace( '/\d+/', '', $first_index ) . ':' . preg_replace( '/\d+/', '', $last_index );
-				$table_name      = $wpdb->prefix . 'saifgs_integrations';
+
 				if ( 'add_integration_Form' !== $is_form ) {
-						// @codingStandardsIgnoreStart
-						$return = $wpdb->update(
-							$table_name,
-							array(
-								'title'                   	=> $title,
-								'plugin_id'               	=> $source_plugin,
-								'source_id'              	=> $source_intity,
-								'order_status'            	=> $order_status,
-								'google_work_sheet_id'    	=> $spreadsheet_worksheet,
-								'google_sheet_tab_id'     	=> $spreadsheet_tab,
-								'google_sheet_column_map' 	=> $integration_map,
-								'google_sheet_column_range' => $column_range, 
-								'disable_integration' 		=> $disable_integration, 
-							),
-							array( 'id' => $formid )
-						);
-						// @codingStandardsIgnoreEnd
+					// phpcs:ignore WordPress.DB.DirectDatabaseQuery.DirectQuery, WordPress.DB.DirectDatabaseQuery.NoCaching
+					$return = $wpdb->update(
+						$wpdb->prefix . 'saifgs_integrations',
+						array(
+							'title'                     => $title,
+							'plugin_id'                 => $source_plugin,
+							'source_id'                 => $source_intity,
+							'order_status'              => $order_status,
+							'google_work_sheet_id'      => $spreadsheet_worksheet,
+							'google_sheet_tab_id'       => $spreadsheet_tab,
+							'google_sheet_column_map'   => $integration_map,
+							'google_sheet_column_range' => $column_range,
+							'disable_integration'       => $disable_integration,
+						),
+						array( 'id' => $formid )
+					);
 				} else {
-					// @codingStandardsIgnoreStart
+					// phpcs:ignore WordPress.DB.DirectDatabaseQuery.DirectQuery, WordPress.DB.DirectDatabaseQuery.NoCaching
 					$return = $wpdb->insert(
-						$table_name,
+						$wpdb->prefix . 'saifgs_integrations',
 						array(
 							'title'                     => $title,
 							'plugin_id'                 => $selected_plugin_id_data,
@@ -138,10 +137,9 @@ if ( ! class_exists( '\SAIFGS\RestApi\SAIFGS_Integration_Form_API' ) ) {
 							'google_sheet_tab_id'       => $spreadsheet_tab,
 							'google_sheet_column_map'   => $integration_map,
 							'google_sheet_column_range' => $column_range,
-							'disable_integration' 		=> $disable_integration,
+							'disable_integration'       => $disable_integration,
 						)
 					);
-					// @codingStandardsIgnoreEnd
 				}
 
 				if ( false === $return ) {

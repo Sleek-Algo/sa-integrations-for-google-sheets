@@ -3,7 +3,7 @@
         'name' => 'sleekalgo/sa-integrations-for-google-sheets',
         'pretty_version' => 'dev-main',
         'version' => 'dev-main',
-        'reference' => '6441d9f727d0325a1e6e6b413597deb67b76c60a',
+        'reference' => 'b204361e2c7c5f3d7b387941bd1a615912b02dd6',
         'type' => 'wp-plugin',
         'install_path' => __DIR__ . '/../../',
         'aliases' => array(),
@@ -13,7 +13,7 @@
         'sleekalgo/sa-integrations-for-google-sheets' => array(
             'pretty_version' => 'dev-main',
             'version' => 'dev-main',
-            'reference' => '6441d9f727d0325a1e6e6b413597deb67b76c60a',
+            'reference' => 'b204361e2c7c5f3d7b387941bd1a615912b02dd6',
             'type' => 'wp-plugin',
             'install_path' => __DIR__ . '/../../',
             'aliases' => array(),

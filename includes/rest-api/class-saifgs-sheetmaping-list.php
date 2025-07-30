@@ -98,19 +98,16 @@ if ( ! class_exists( '\SAIFGS\RestApi\SAIFGS_Sheetmaping_List' ) ) {
 				return;
 			}
 
-			// @codingStandardsIgnoreStart
-			$table_name = $wpdb->prefix . 'saifgs_integrations';
-			
 			$where_condition = array(
 				'id' => $integration_id,
 			);
 
-			$query = $wpdb->prepare(
-				"DELETE FROM $table_name WHERE id = %s",
-				$where_condition['id']
+			$result = $wpdb->query( // phpcs:ignore WordPress.DB.DirectDatabaseQuery.DirectQuery, WordPress.DB.DirectDatabaseQuery.NoCaching
+				$wpdb->prepare(
+					"DELETE FROM `{$wpdb->prefix}saifgs_integrations` WHERE `id` = %s",
+					$where_condition['id']
+				)
 			);
-
-			$result = $wpdb->query( $query );
 
 			// Check for errors or success.
 			if ( false === $result ) {
@@ -120,7 +117,6 @@ if ( ! class_exists( '\SAIFGS\RestApi\SAIFGS_Sheetmaping_List' ) ) {
 			} else {
 				wp_send_json( __( 'Integration deleted successfully.', 'sa-integrations-for-google-sheets' ) );
 			}
-			// @codingStandardsIgnoreEnd
 		}
 
 		/**
@@ -145,6 +141,24 @@ if ( ! class_exists( '\SAIFGS\RestApi\SAIFGS_Sheetmaping_List' ) ) {
 			$filter_start_date            = ( isset( $param_data['filter_start_date'] ) ) ? sanitize_text_field( $param_data['filter_start_date'] ) : '';
 			$filter_end_date              = ( isset( $param_data['filter_end_date'] ) ) ? sanitize_text_field( $param_data['filter_end_date'] ) : '';
 			$plugin_filter                = isset( $param_data['plugin_filter'] ) && 'all' !== $param_data['plugin_filter'] ? sanitize_key( $param_data['plugin_filter'] ) : '';
+
+			// Generate cache key based on all parameters.
+			$cache_key   = 'saifgs_integration_data_' . md5(
+				$integrigration_api_limit,
+				$integration_api_current_page,
+				$filter_title,
+				$filter_start_date,
+				$filter_end_date,
+				$plugin_filter
+			);
+			$cache_group = 'saifgs_integrations';
+
+			// Try to get cached data first.
+			$cached_data = wp_cache_get( $cache_key, $cache_group );
+
+			if ( false !== $cached_data ) {
+				return new \WP_REST_Response( $cached_data, 200 );
+			}
 
 			$offset = ( $integration_api_current_page - 1 ) * $integrigration_api_limit;
 
@@ -194,9 +208,7 @@ if ( ! class_exists( '\SAIFGS\RestApi\SAIFGS_Sheetmaping_List' ) ) {
 
 			$new_responses = array();
 			$filed         = array();
-			// @codingStandardsIgnoreStart
-            $results = $wpdb->get_results($sql);
-			// @codingStandardsIgnoreEnd
+			$results = $wpdb->get_results( $sql ); // @codingStandardsIgnoreLine
 
 			if ( is_array( $results ) && count( $results ) > 0 ) {
 				foreach ( $results as $plugin_index => $data ) {
@@ -209,7 +221,8 @@ if ( ! class_exists( '\SAIFGS\RestApi\SAIFGS_Sheetmaping_List' ) ) {
 						$client = '';
 					}
 					$response = $client->saifgs_request( $request );
-					$sheets   = $response['sheets'];
+					wp_cache_set( $sheet_cache_key, $sheets_data, $cache_group, 15 * MINUTE_IN_SECONDS );
+					$sheets = $response['sheets'];
 
 					if ( 'wpforms' === $data->plugin_id ) {
 						$posts = wpforms()->form->get();
@@ -333,17 +346,19 @@ if ( ! class_exists( '\SAIFGS\RestApi\SAIFGS_Sheetmaping_List' ) ) {
 
 			$count = 10;
 			if ( $check_run_query ) {
-				$count_query = "SELECT COUNT(*) AS total_count FROM $table_name";
-				// @codingStandardsIgnoreStart
-				$count_query_result = $wpdb->get_results($count_query);
-				// @codingStandardsIgnoreEnd
-				$count = $count_query_result[0]->total_count;
+				$count_query        = "SELECT COUNT(*) AS total_count FROM $table_name";
+				$count_query_result = $wpdb->get_results( $count_query );// @codingStandardsIgnoreLine
+				$count              = $count_query_result[0]->total_count;
 			} else {
 				$count = count( $filed );
 			}
 			$new_responses['data']  = $filed;
 			$new_responses['page']  = $integration_api_current_page;
 			$new_responses['total'] = $count;
+
+			// Cache the final response.
+			wp_cache_set( $cache_key, $new_responses, $cache_group, 30 * MINUTE_IN_SECONDS );
+
 			wp_send_json( array( 'new_response' => $new_responses ) );
 		}
 	}

@@ -86,11 +86,29 @@ if ( ! class_exists( '\SAIFGS\RestApi\SAIFGS_Integration_Edit_Form_API' ) ) {
 				);
 			}
 
-			// @codingStandardsIgnoreStart
-			$table_name = $wpdb->prefix . 'saifgs_integrations';
-			$query   = $wpdb->prepare( "SELECT id, title, plugin_id, source_id, order_status, google_work_sheet_id, google_sheet_tab_id, google_sheet_column_map, google_sheet_column_range, disable_integration, created_at FROM $table_name WHERE id = %d", $form_id );
-			$results = $wpdb->get_results( $query );
-			// @codingStandardsIgnoreEnd
+			// Set cache key and group.
+			$cache_key   = 'saifgs_integration_' . $form_id;
+			$cache_group = 'saifgs_integrations';
+
+			// Try to get cached data first.
+			$results = wp_cache_get( $cache_key, $cache_group );
+
+			// If not found in cache, fetch from database.
+			if ( false === $results ) {
+				$results = $wpdb->get_results( // phpcs:ignore WordPress.DB.DirectDatabaseQuery.DirectQuery
+					$wpdb->prepare(
+						"SELECT `id`, `title`, `plugin_id`, `source_id`, `order_status`, 
+							`google_work_sheet_id`, `google_sheet_tab_id`, `google_sheet_column_map`, 
+							`google_sheet_column_range`, `disable_integration`, `created_at` 
+						FROM `{$wpdb->prefix}saifgs_integrations` 
+						WHERE `id` = %d",
+						$form_id
+					)
+				);
+
+				// Cache the results for 1 hour (adjust as needed).
+				wp_cache_set( $cache_key, $results, $cache_group, HOUR_IN_SECONDS );
+			}
 
 			if ( empty( $results ) ) {
 				wp_send_json_error(
@@ -205,6 +223,11 @@ if ( ! class_exists( '\SAIFGS\RestApi\SAIFGS_Integration_Edit_Form_API' ) ) {
 						wp_send_json_error( array( 'error' => $error_message ), 500 );
 					}
 				}
+
+				// Cache the final formatted data for quick retrieval.
+				$formatted_cache_key = 'saifgs_formatted_' . $form_id;
+				wp_cache_set( $formatted_cache_key, $formatted_data, $cache_group, 30 * MINUTE_IN_SECONDS );
+
 				wp_send_json( $formatted_data );
 			}
 		}

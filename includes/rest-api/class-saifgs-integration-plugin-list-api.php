@@ -82,26 +82,35 @@ if ( ! class_exists( '\SAIFGS\RestApi\SAIFGS_Integration_Plugin_List_API' ) ) {
 		 */
 		public function saifgs_get_plugins_list() {
 			global $wpdb;
-			// @codingStandardsIgnoreStart
-			
-			// Define the table name.
-			$table_name = $wpdb->prefix . 'saifgs_supported_plugins';
 
-			// Prepare the SQL query.
-			$query = $wpdb->prepare( "SELECT `id`, `title`, `key`, `usability_status`, `availability_status`, `image_url`, `url`, `discription` FROM $table_name" );
+			// Set cache key and group.
+			$cache_key   = 'saifgs_supported_plugins_list';
+			$cache_group = 'saifgs_plugins';
 
-			// Execute the query and fetch results.
-			$results = $wpdb->get_results( $query );
+			// Try to get cached data first.
+			$results = wp_cache_get( $cache_key, $cache_group );
 
-			// Check for errors.
-			if ( $wpdb->last_error ) {
-				wp_send_json_error( array( 'message' => __( 'An error occurred while fetching plugin data.', 'sa-integrations-for-google-sheets' ) ) );
-				return;
+			// If not found in cache, fetch from database.
+			if ( false === $results ) {
+				// Execute the query and fetch results.
+				$results = $wpdb->get_results( // phpcs:ignore WordPress.DB.DirectDatabaseQuery.DirectQuery, WordPress.DB.DirectDatabaseQuery.NoCaching
+					"SELECT `id`, `title`, `key`, `usability_status`, 
+						`availability_status`, `image_url`, `url`, `discription` 
+					FROM `{$wpdb->prefix}saifgs_supported_plugins` "
+				);
+
+				// Check for errors.
+				if ( $wpdb->last_error ) {
+					wp_send_json_error( array( 'message' => __( 'An error occurred while fetching plugin data.', 'sa-integrations-for-google-sheets' ) ) );
+					return;
+				}
+
+				// Cache the results for 12 hours (adjust as needed).
+				wp_cache_set( $cache_key, $results, $cache_group, 12 * HOUR_IN_SECONDS );
 			}
 
 			// Send JSON response.
 			wp_send_json( $results );
-			// @codingStandardsIgnoreEnd
 		}
 
 		/**
@@ -120,8 +129,6 @@ if ( ! class_exists( '\SAIFGS\RestApi\SAIFGS_Integration_Plugin_List_API' ) ) {
 			// Extract query parameters.
 			$data = $request->get_query_params();
 
-			// @codingStandardsIgnoreStart
-			$table_name  = $wpdb->prefix . 'saifgs_supported_plugins';
 			$plugin_data = ( isset( $data['data'] ) ) ? $data['data'] : '';
 			if ( is_array( $plugin_data ) && count( $plugin_data ) > 0 ) {
 
@@ -133,15 +140,15 @@ if ( ! class_exists( '\SAIFGS\RestApi\SAIFGS_Integration_Plugin_List_API' ) ) {
 					$usability_status    = 'no';
 					$availability_status = 'no';
 				}
-				
+
 				// Ensure the ID field is present and valid.
 				if ( isset( $plugin_data['id'] ) && is_numeric( $plugin_data['id'] ) ) {
 					// Update the database record for the specified plugin.
-					$wpdb->update(
-						$table_name,
+					$wpdb->update(// phpcs:ignore WordPress.DB.DirectDatabaseQuery.DirectQuery, WordPress.DB.DirectDatabaseQuery.NoCaching
+						$wpdb->prefix . 'saifgs_supported_plugins',
 						array(
-							'usability_status' =>  $usability_status,
-							'availability_status' =>  $availability_status,
+							'usability_status'    => $usability_status,
+							'availability_status' => $availability_status,
 						),
 						array(
 							'id' => $plugin_data['id'],
@@ -150,16 +157,16 @@ if ( ! class_exists( '\SAIFGS\RestApi\SAIFGS_Integration_Plugin_List_API' ) ) {
 						array( '%d' )        // Format for the condition.
 					);
 				}
-				
 			} else {
-                $wpdb->query($wpdb->prepare("UPDATE $table_name SET usability_status = 'no', availability_status = 'no' "));
+				// phpcs:ignore WordPress.DB.DirectDatabaseQuery.DirectQuery, WordPress.DB.DirectDatabaseQuery.NoCaching
+				$wpdb->query(
+					"UPDATE `{$wpdb->prefix}saifgs_supported_plugins` 
+					SET `usability_status` = 'no', `availability_status` = 'no' "
+				);
 			}
 
-			/**
-			 * API Response
-			 */
+			// API Response.
 			wp_send_json( 'updated ..' );
-			// @codingStandardsIgnoreEnd
 		}
 	}
 }
