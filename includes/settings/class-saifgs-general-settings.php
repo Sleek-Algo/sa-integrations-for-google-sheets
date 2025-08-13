@@ -152,60 +152,62 @@ if ( ! class_exists( '\SAIFGS\Settings\SAIFGS_General_Settings' ) ) {
 		}
 
 		/**
-		 * Handles the upload and saving of a JSON configuration file.
+		 * Handles JSON file upload and saves Google credentials.
+		 * 
+		 * - Allows JSON file uploads via WordPress media handler
+		 * - Validates and processes the uploaded file
+		 * - Stores file info and parsed JSON in options
+		 * - Returns success/error response
 		 *
-		 * This method processes the uploaded file provided through the `$_FILES` superglobal.
-		 * The method performs the following actions:
-		 *
-		 * - Validates the uploaded file to ensure it is of type 'application/json' and that no upload errors occurred.
-		 * - Moves the uploaded file to a designated target directory within the server.
-		 * - Updates the WordPress options table with the name and path of the uploaded file.
-		 * - Reads and decodes the JSON content of the file.
-		 * - Returns a success response containing:
-		 *   - A success message.
-		 *   - Details of the uploaded file, including its name and the decoded JSON content.
-		 *
-		 * If the file could not be moved to the target directory or if the uploaded file is invalid:
-		 * - A `WP_Error` instance is returned, containing an appropriate error message and status code.
-		 *
-		 * @param \WP_REST_Request $request The REST API request object that contains the uploaded file.
-		 *
-		 * @return \WP_REST_Response|\WP_Error Response object containing either the success message and file details or an error message.
+		 * @param \WP_REST_Request $request REST request object
+		 * @return \WP_REST_Response|\WP_Error Response with file data or error
 		 */
 		public function saifgs_save_settings( $request ) {
-            $json_file = isset($_FILES['json_file']) ? $_FILES['json_file'] : null;// @codingStandardsIgnoreLine
-
-			if ( $json_file && UPLOAD_ERR_OK === $json_file['error'] && 'application/json' === $json_file['type'] ) {
-				$target_file = SAIFGS_PATH_CREDENTIALS . '/' . basename( $json_file['name'] );
-				$file_saved = move_uploaded_file( $json_file['tmp_name'], $target_file ); // @codingStandardsIgnoreLine
-				if ( $file_saved ) {
-					$json_content = json_decode(file_get_contents($target_file)); // @codingStandardsIgnoreLine
+			// Add JSON to allowed upload mime types.
+			add_filter('upload_mimes', function($mimes) {
+				$mimes['json'] = 'application/json';
+				return $mimes;
+			});
+			
+			$json_file = isset($_FILES['json_file']) ? $_FILES['json_file'] : null;
+		
+			if ( $json_file && UPLOAD_ERR_OK === $json_file['error'] ) {
+				
+				$upload_overrides = array(
+					'test_form' => false,
+					'mimes' => array('json' => 'application/json'),
+					'action' => 'saifgs_upload' // Custom action for security.
+				);
+				
+				$uploaded_file = wp_handle_upload($json_file, $upload_overrides);
+				
+				if ($uploaded_file && !isset($uploaded_file['error'])) {
+					$json_content = json_decode(file_get_contents($uploaded_file['file']));
+					
 					update_option(
 						'saifgs_google_credentials_file',
 						array(
-							'name' => $json_file['name'],
-							'path' => $target_file,
+							'name' => basename($uploaded_file['file']),
+							'path' => $uploaded_file['file'],
 							'data' => $json_content,
 						)
 					);
-
-					wp_send_json_success(
-						array(
-							'message'      => 'Settings saved successfully.',
-							'uploadedFile' =>
-							array(
-								'name'        => $json_file['name'],
-								'path'        => $target_file,
-								'jsonContent' => $json_content,
-							),
-						)
-					);
+		
+					wp_send_json_success(array(
+						'message' => 'Settings saved successfully.',
+						'uploadedFile' => array(
+							'name' => basename($uploaded_file['file']),
+							'path' => $uploaded_file['file'],
+							'jsonContent' => $json_content,
+						),
+					));
 				} else {
-					return new \WP_Error( 'file_move_failed', 'Failed to move uploaded file.', array( 'status' => 500 ) );
+					$error_message = $uploaded_file['error'] ?? 'Failed to upload file.';
+					return new \WP_Error('file_upload_failed', $error_message, array('status' => 500));
 				}
 			}
-
-			return new \WP_Error( 'no_file_uploaded', 'No file uploaded or file is not a valid JSON file.', array( 'status' => 400 ) );
+		
+			return new \WP_Error('no_file_uploaded', 'No file uploaded or invalid file.', array('status' => 400));
 		}
 
 		/**

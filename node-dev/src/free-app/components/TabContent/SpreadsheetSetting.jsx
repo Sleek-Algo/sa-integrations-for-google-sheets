@@ -237,11 +237,19 @@ const IntegrationSetting = ( { navVisibility } ) => {
 									'sa-integrations-for-google-sheets'
 								) }
 								fileList={ fileList }
-								beforeUpload={ () => false }
+								beforeUpload={(file) => {
+									// Additional client-side validation
+									const isJson = file.type === 'application/json';
+									if (!isJson) {
+										message.error(__('You can only upload JSON files!', 'sa-integrations-for-google-sheets'));
+									}
+									return isJson ? false : Upload.LIST_IGNORE;
+								}}
 								maxCount={ 1 }
 								accept=".json"
 								action="/wp-json/saifgs/v1/save-settings/"
 								onChange={ ( info ) => {
+									console.log('onChange={ ( info )', info);
 									if ( info.file.status === 'done' ) {
 										const response = info.file.response;
 										if (
