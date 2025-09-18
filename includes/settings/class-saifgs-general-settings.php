@@ -133,6 +133,7 @@ if ( ! class_exists( '\SAIFGS\Settings\SAIFGS_General_Settings' ) ) {
 		 * @return \WP_REST_Response Response object containing the uploaded file details and its JSON data.
 		 */
 		public function saifgs_get_integration_setting() {
+			error_log('saifgs_get_integration_setting() Run');
 			$google_credentials_file = get_option( 'saifgs_google_credentials_file', null );
 			if ( isset( $google_credentials_file['path'] ) && file_exists( $google_credentials_file['path'] ) ) {
 				return rest_ensure_response(
@@ -162,52 +163,221 @@ if ( ! class_exists( '\SAIFGS\Settings\SAIFGS_General_Settings' ) ) {
 		 * @param \WP_REST_Request $request REST request object
 		 * @return \WP_REST_Response|\WP_Error Response with file data or error
 		 */
+		// public function saifgs_save_settings( $request ) {
+		// 	// Add JSON to allowed upload mime types.
+		// 	add_filter('upload_mimes', function($mimes) {
+		// 		$mimes['json'] = 'application/json';
+		// 		return $mimes;
+		// 	});
+			
+		// 	$json_file = isset($_FILES['json_file']) ? $_FILES['json_file'] : null;
+		
+		// 	if ( $json_file && UPLOAD_ERR_OK === $json_file['error'] ) {
+				
+		// 		$upload_overrides = array(
+		// 			'test_form' => false,
+		// 			'mimes' => array('json' => 'application/json'),
+		// 			'action' => 'saifgs_upload' // Custom action for security.
+		// 		);
+				
+		// 		$uploaded_file = wp_handle_upload($json_file, $upload_overrides);
+				
+		// 		if ($uploaded_file && !isset($uploaded_file['error'])) {
+		// 			$json_content = json_decode(file_get_contents($uploaded_file['file']));
+					
+		// 			update_option(
+		// 				'saifgs_google_credentials_file',
+		// 				array(
+		// 					'name' => basename($uploaded_file['file']),
+		// 					'path' => $uploaded_file['file'],
+		// 					'data' => $json_content,
+		// 				)
+		// 			);
+		
+		// 			wp_send_json_success(array(
+		// 				'message' => 'Settings saved successfully.',
+		// 				'uploadedFile' => array(
+		// 					'name' => basename($uploaded_file['file']),
+		// 					'path' => $uploaded_file['file'],
+		// 					'jsonContent' => $json_content,
+		// 				),
+		// 			));
+		// 		} else {
+		// 			$error_message = $uploaded_file['error'] ?? 'Failed to upload file.';
+		// 			return new \WP_Error('file_upload_failed', $error_message, array('status' => 500));
+		// 		}
+		// 	}
+		
+		// 	return new \WP_Error('no_file_uploaded', 'No file uploaded or invalid file.', array('status' => 400));
+		// }
+
 		public function saifgs_save_settings( $request ) {
-			// Add JSON to allowed upload mime types.
-			add_filter('upload_mimes', function($mimes) {
+			error_log('$_FILES[json_file] : ' . print_r($_FILES['json_file'] , true));
+			// 2. VALIDATION - Check if file was uploaded
+			if ( ! isset( $_FILES['json_file'] ) || $_FILES['json_file']['error'] !== UPLOAD_ERR_OK ) {
+				return new \WP_Error( 'no_file_uploaded', __( 'No file uploaded or upload error occurred.' ), array( 'status' => 400 ) );
+			}
+		
+			// 3. SANITIZE - File information
+			$json_file = array(
+				'name'     => sanitize_file_name( $_FILES['json_file']['name'] ),
+				'type'     => sanitize_mime_type( $_FILES['json_file']['type'] ),
+				'tmp_name' => $_FILES['json_file']['tmp_name'], // WordPress will handle this in wp_handle_upload
+				'error'    => intval( $_FILES['json_file']['error'] ),
+				'size'     => intval( $_FILES['json_file']['size'] )
+			);
+			// error_log('$json_file =  ' . print_r($json_file , true));
+			// error_log('$json_file = Name = ' . print_r($json_file['name'] , true));
+			// error_log('$json_file = wp_check_filetype = ' . print_r(wp_check_filetype( $json_file['name'] ) , true));
+			// 4. VALIDATION - File type and size
+			// Check if file is JSON
+			// $file_type = wp_check_filetype( $json_file['name'] );
+			$file_type = $json_file['type'];
+			// error_log('$file_type =  ' . print_r($file_type , true));
+			if ( $file_type !== 'application/json' ) {
+				return new \WP_Error( 'invalid_file_type', __( 'Only JSON files are allowed.' ), array( 'status' => 400 ) );
+			}
+		
+			// Check file size (max 2MB)
+			$max_size = 2 * 1024 * 1024; // 2MB in bytes
+			if ( $json_file['size'] > $max_size ) {
+				return new \WP_Error( 'file_too_large', __( 'File size must be less than 2MB.' ), array( 'status' => 400 ) );
+			}
+		
+			if ( $json_file['size'] === 0 ) {
+				return new \WP_Error( 'file_empty', __( 'Uploaded file is empty.' ), array( 'status' => 400 ) );
+			}
+		
+			// 5. Add JSON to allowed upload mime types
+			add_filter( 'upload_mimes', function( $mimes ) {
 				$mimes['json'] = 'application/json';
 				return $mimes;
 			});
-			
-			$json_file = isset($_FILES['json_file']) ? $_FILES['json_file'] : null;
 		
-			if ( $json_file && UPLOAD_ERR_OK === $json_file['error'] ) {
-				
-				$upload_overrides = array(
-					'test_form' => false,
-					'mimes' => array('json' => 'application/json'),
-					'action' => 'saifgs_upload' // Custom action for security.
+			// 6. Handle file upload with WordPress security
+			$upload_overrides = array(
+				'test_form' => false,
+				'test_type' => true, // Check file type
+				'mimes'     => array( 'json' => 'application/json' ),
+				'action'    => 'saifgs_upload'
+			);
+		
+			$uploaded_file = wp_handle_upload( $json_file, $upload_overrides );
+		
+			// 7. Check for upload errors
+			if ( isset( $uploaded_file['error'] ) ) {
+				return new \WP_Error( 
+					'file_upload_failed', 
+					esc_html( $uploaded_file['error'] ), 
+					array( 'status' => 500 ) 
 				);
-				
-				$uploaded_file = wp_handle_upload($json_file, $upload_overrides);
-				
-				if ($uploaded_file && !isset($uploaded_file['error'])) {
-					$json_content = json_decode(file_get_contents($uploaded_file['file']));
-					
-					update_option(
-						'saifgs_google_credentials_file',
-						array(
-							'name' => basename($uploaded_file['file']),
-							'path' => $uploaded_file['file'],
-							'data' => $json_content,
-						)
-					);
+			}
 		
-					wp_send_json_success(array(
-						'message' => 'Settings saved successfully.',
-						'uploadedFile' => array(
-							'name' => basename($uploaded_file['file']),
-							'path' => $uploaded_file['file'],
-							'jsonContent' => $json_content,
-						),
-					));
-				} else {
-					$error_message = $uploaded_file['error'] ?? 'Failed to upload file.';
-					return new \WP_Error('file_upload_failed', $error_message, array('status' => 500));
+			if ( ! $uploaded_file || ! file_exists( $uploaded_file['file'] ) ) {
+				return new \WP_Error( 'file_upload_failed', __( 'Failed to upload file.' ), array( 'status' => 500 ) );
+			}
+		
+			// 8. Read and validate JSON content
+			$json_content = file_get_contents( $uploaded_file['file'] );
+			if ( $json_content === false ) {
+				unlink( $uploaded_file['file'] ); // Clean up
+				return new \WP_Error( 'file_read_error', __( 'Failed to read file contents.' ), array( 'status' => 500 ) );
+			}
+		
+			$json_data = json_decode( $json_content );
+			
+			// Validate JSON structure
+			if ( json_last_error() !== JSON_ERROR_NONE ) {
+				unlink( $uploaded_file['file'] ); // Clean up invalid file
+				return new \WP_Error( 
+					'invalid_json', 
+					sprintf( 
+						__( 'Invalid JSON file. Error: %s' ),
+						esc_html( json_last_error_msg() )
+					), 
+					array( 'status' => 400 ) 
+				);
+			}
+		
+			// 9. Additional validation for Google credentials structure
+			if ( ! $this->validate_google_credentials( $json_data ) ) {
+				unlink( $uploaded_file['file'] );
+				return new \WP_Error( 
+					'invalid_credentials', 
+					__( 'The JSON file does not contain valid Google service account credentials.' ), 
+					array( 'status' => 400 ) 
+				);
+			}
+		
+			// 10. Sanitize file data before saving
+			$file_data = array(
+				'name' => sanitize_file_name( basename( $uploaded_file['file'] ) ),
+				'path' => $uploaded_file['file'], // This is already handled by WordPress
+				'data' => $json_data
+			);
+		
+			// 11. Save to options
+			update_option(
+				'saifgs_google_credentials_file',
+				$file_data
+			);
+		
+			// 12. Prepare response with escaped data
+			$response_data = array(
+				'message' => __( 'Settings saved successfully.' ),
+				'uploadedFile' => array(
+					'name' 			=> esc_html( $file_data['name'] ),
+					'path' 			=> $uploaded_file['file'],
+					'jsonContent' 	=> $json_data,
+				),
+			);
+		
+			return rest_ensure_response( $response_data );
+			// return wp_send_json_success( $response_data );
+		}
+		
+		/**
+		 * Validate Google service account credentials structure
+		 * 
+		 * @param mixed $json_data Decoded JSON data
+		 * @return bool True if valid, false otherwise
+		 */
+		private function validate_google_credentials( $json_data ) {
+			// Check if it's an object
+			if ( ! is_object( $json_data ) ) {
+				return false;
+			}
+		
+			// Required fields for Google service account credentials
+			$required_fields = array(
+				'type',
+				'project_id',
+				'private_key_id',
+				'private_key',
+				'client_email',
+				'client_id',
+				'auth_uri',
+				'token_uri',
+				'auth_provider_x509_cert_url',
+				'client_x509_cert_url'
+			);
+		
+			foreach ( $required_fields as $field ) {
+				if ( ! isset( $json_data->$field ) || empty( $json_data->$field ) ) {
+					return false;
 				}
 			}
 		
-			return new \WP_Error('no_file_uploaded', 'No file uploaded or invalid file.', array('status' => 400));
+			// Additional validation for specific fields
+			if ( $json_data->type !== 'service_account' ) {
+				return false;
+			}
+		
+			if ( ! filter_var( $json_data->client_email, FILTER_VALIDATE_EMAIL ) ) {
+				return false;
+			}
+		
+			return true;
 		}
 
 		/**
