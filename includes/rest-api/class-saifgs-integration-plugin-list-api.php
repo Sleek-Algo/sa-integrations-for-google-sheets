@@ -93,10 +93,11 @@ if ( ! class_exists( '\SAIFGS\RestApi\SAIFGS_Integration_Plugin_List_API' ) ) {
 			// If not found in cache, fetch from database.
 			if ( false === $results ) {
 				// Execute the query and fetch results.
-				$results = $wpdb->get_results( // phpcs:ignore WordPress.DB.DirectDatabaseQuery.DirectQuery, WordPress.DB.DirectDatabaseQuery.NoCaching
+				// phpcs:ignore WordPress.DB.DirectDatabaseQuery.DirectQuery, WordPress.DB.DirectDatabaseQuery.NoCaching
+				$results = $wpdb->get_results(
 					"SELECT `id`, `title`, `key`, `usability_status`, 
 						`availability_status`, `image_url`, `url`, `discription` 
-					FROM `{$wpdb->prefix}saifgs_supported_plugins` "
+					FROM `{$wpdb->prefix}saifgs_supported_plugins`"
 				);
 
 				// Check for errors.

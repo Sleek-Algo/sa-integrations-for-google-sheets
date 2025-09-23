@@ -123,9 +123,7 @@ if ( ! class_exists( '\SAIFGS\RestApi\SAIFGS_Contact_Form_7_Entries_API' ) ) {
 				);
 				wp_enqueue_script( 'saifgs-contact-form-7-entries-script' );
 
-				/**
-				 * Set Translations
-				 */
+				// Set Translations.
 				wp_set_script_translations( 'saifgs-contact-form-7-entries-script', 'sa-integrations-for-google-sheets', SAIFGS_DIR . 'languages' );
 
 				wp_enqueue_style(
@@ -234,7 +232,7 @@ if ( ! class_exists( '\SAIFGS\RestApi\SAIFGS_Contact_Form_7_Entries_API' ) ) {
 			$limit = ( 0 === $limit ) ? 10 : $limit;
 
 			$current_page = absint( $request->get_param( 'current_page' ) );
-			$current_page  = ( 0 === $current_page ) ? 1 : $current_page;
+			$current_page = ( 0 === $current_page ) ? 1 : $current_page;
 
 			$offset = ( $current_page - 1 ) * $limit;
 
@@ -253,19 +251,20 @@ if ( ! class_exists( '\SAIFGS\RestApi\SAIFGS_Contact_Form_7_Entries_API' ) ) {
 
 			if ( false === $entries ) {
 				// Get entries from database with proper prepare.
-				$entries_query = $wpdb->prepare(
-					"SELECT id, form_id, created_at, updated_at 
+				// phpcs:ignore WordPress.DB.DirectDatabaseQuery.DirectQuery, WordPress.DB.PreparedSQL.NotPrepared
+				$entries = $wpdb->get_results(
+					$wpdb->prepare(
+						"SELECT id, form_id, created_at, updated_at 
 						FROM {$wpdb->prefix}saifgs_contact_form_7_entries 
 						WHERE form_id = %d 
 						ORDER BY id DESC 
 						LIMIT %d OFFSET %d",
-					$form_id,
-					$limit,
-					$offset
+						$form_id,
+						$limit,
+						$offset
+					),
+					ARRAY_A
 				);
-
-				// phpcs:ignore WordPress.DB.DirectDatabaseQuery.DirectQuery, WordPress.DB.PreparedSQL.NotPrepared
-				$entries = $wpdb->get_results( $entries_query, ARRAY_A );
 
 				// Cache entries for 5 minutes.
 				wp_cache_set( $entries_cache_key, $entries, 'saifgs_entries', 5 * MINUTE_IN_SECONDS );
@@ -273,15 +272,15 @@ if ( ! class_exists( '\SAIFGS\RestApi\SAIFGS_Contact_Form_7_Entries_API' ) ) {
 
 			if ( false === $total ) {
 				// Get total count with proper prepare.
-				$total_query = $wpdb->prepare(
-					"SELECT COUNT(id) 
+				// phpcs:ignore WordPress.DB.DirectDatabaseQuery.DirectQuery, WordPress.DB.PreparedSQL.NotPrepared
+				$total = $wpdb->get_var(
+					$wpdb->prepare(
+						"SELECT COUNT(id) 
 						FROM {$wpdb->prefix}saifgs_contact_form_7_entries 
 						WHERE form_id = %d",
-					$form_id
+						$form_id
+					)
 				);
-
-				// phpcs:ignore WordPress.DB.DirectDatabaseQuery.DirectQuery, WordPress.DB.PreparedSQL.NotPrepared
-				$total = $wpdb->get_var( $total_query );
 
 				// Cache total for longer (15 minutes) as it changes less frequently.
 				wp_cache_set( $total_cache_key, $total, 'saifgs_entries', 15 * MINUTE_IN_SECONDS );
@@ -301,14 +300,16 @@ if ( ! class_exists( '\SAIFGS\RestApi\SAIFGS_Contact_Form_7_Entries_API' ) ) {
 
 				$entry_meta = array();
 				if ( ! empty( $entry_ids ) ) {
+					// Most secure WPCS compliant solution.
+					$entry_ids_clean = array_map( 'absint', $entry_ids );
+					$placeholders    = implode( ',', $entry_ids_clean );
+
+					$query = "SELECT `meta_id`, `entry_id`, `meta_key`, `meta_value` 
+							FROM `{$wpdb->prefix}saifgs_contact_form_7_entrymeta` 
+							WHERE `entry_id` IN ($placeholders)";
+
 					// phpcs:ignore WordPress.DB.DirectDatabaseQuery.DirectQuery, WordPress.DB.PreparedSQL.NotPrepared
-					$entry_meta = $wpdb->get_results(
-						sprintf(
-							"SELECT meta_id, entry_id, meta_key, meta_value	 FROM {$wpdb->prefix}saifgs_contact_form_7_entrymeta WHERE entry_id IN (%s)",
-							implode( ',', array_map( 'intval', $entry_ids ) ) // phpcs:ignore WordPress.DB.DirectDatabaseQuery.DirectQuery, WordPress.DB.PreparedSQL.NotPrepared
-						),
-						ARRAY_A
-					);
+					$entry_meta = $wpdb->get_results( $wpdb->prepare( $query ), ARRAY_A );
 				}
 
 				foreach ( $entries as $index => $entry ) {

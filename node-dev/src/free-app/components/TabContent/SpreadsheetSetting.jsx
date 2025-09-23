@@ -56,6 +56,9 @@ const IntegrationSetting = ( { navVisibility } ) => {
 			const response_remove = await apiFetch( {
 				path: '/saifgs/v1/remove-file/',
 				method: 'POST',
+				data: {
+					_wpnonce: saifgs_customizations_localized_objects.nonce 
+				}
 			} );
 			navVisibility( true );
 			setUploadedFile( null );
@@ -227,6 +230,12 @@ const IntegrationSetting = ( { navVisibility } ) => {
 										'json_file',
 										'sa-integrations-for-google-sheets'
 									),
+									headers: {
+										'X-WP-Nonce': saifgs_customizations_localized_objects.nonce
+									},
+									data: {
+										_wpnonce: saifgs_customizations_localized_objects.nonce,
+									}
 								} }
 								title={ __(
 									'Google Services API Credentials',

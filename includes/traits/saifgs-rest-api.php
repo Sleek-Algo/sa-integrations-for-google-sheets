@@ -57,6 +57,20 @@ if ( ! trait_exists( '\SAIFGS\Traits\SAIFGS_RestAPI' ) ) {
 		 * @return bool True if the user has permissions, otherwise false.
 		 */
 		public function saifgs_permissions() {
+			// For REST API, check X-WP-Nonce header.
+			$nonce = '';
+
+			// Check for X-WP-Nonce header.
+			if ( isset( $_SERVER['HTTP_X_WP_NONCE'] ) ) {
+				$nonce = sanitize_text_field( wp_unslash( $_SERVER['HTTP_X_WP_NONCE'] ) );
+			} elseif ( isset( $_REQUEST['_wpnonce'] ) ) { // Fallback to POST/GET parameter.
+				$nonce = sanitize_text_field( wp_unslash( $_REQUEST['_wpnonce'] ) );
+			}
+
+			if ( ! wp_verify_nonce( $nonce, 'wp_rest' ) ) {
+				return false;
+			}
+
 			return true;
 		}
 	}

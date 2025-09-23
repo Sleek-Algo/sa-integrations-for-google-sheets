@@ -180,35 +180,52 @@ if ( ! class_exists( '\SAIFGS\RestApi\SAIFGS_Sheetmaping_List' ) ) {
 
 			// Prepare SQL query based on filter parameters.
 			$check_run_query = true;
+			$sql             = '';
+			$query_params    = array();
+
 			if ( '' !== $filter_title && '' === $filter_start_date && '' === $filter_end_date && '' === $plugin_filter ) {
 				$check_run_query = false;
-				$sql             = "SELECT $column_integrated_table FROM $table_name WHERE title LIKE '%$filter_title%' ORDER BY created_at DESC";
+				$sql             = "SELECT $column_integrated_table FROM $table_name WHERE title LIKE %s ORDER BY created_at DESC";
+				$query_params    = array( '%' . $wpdb->esc_like( $filter_title ) . '%' );
 			} elseif ( '' !== $filter_start_date && '' !== $filter_end_date && '' === $filter_title && '' === $plugin_filter ) {
 				$check_run_query = false;
-				$sql             = "SELECT $column_integrated_table FROM $table_name WHERE created_at BETWEEN '$filter_start_date' AND '$filter_end_date' ORDER BY created_at DESC";
+				$sql             = "SELECT $column_integrated_table FROM $table_name WHERE created_at BETWEEN %s AND %s ORDER BY created_at DESC";
+				$query_params    = array( $filter_start_date, $filter_end_date );
 			} elseif ( '' === $filter_title && '' === $filter_start_date && '' === $filter_end_date && '' !== $plugin_filter ) {
 				$check_run_query = false;
-				$sql             = "SELECT $column_integrated_table FROM $table_name WHERE plugin_id = '$plugin_filter' ORDER BY created_at DESC";
+				$sql             = "SELECT $column_integrated_table FROM $table_name WHERE plugin_id = %s ORDER BY created_at DESC";
+				$query_params    = array( $plugin_filter );
 			} elseif ( '' !== $filter_start_date && '' !== $filter_end_date && '' !== $filter_title ) {
 				$check_run_query = false;
-				$sql             = "SELECT $column_integrated_table FROM $table_name WHERE title LIKE '%$filter_title%' AND created_at BETWEEN '$filter_start_date' AND '$filter_end_date' ORDER BY created_at DESC";
+				$sql             = "SELECT $column_integrated_table FROM $table_name WHERE title LIKE %s AND created_at BETWEEN %s AND %s ORDER BY created_at DESC";
+				$query_params    = array( '%' . $wpdb->esc_like( $filter_title ) . '%', $filter_start_date, $filter_end_date );
 			} elseif ( '' !== $filter_title && '' !== $plugin_filter ) {
 				$check_run_query = false;
-				$sql             = "SELECT $column_integrated_table FROM $table_name WHERE title LIKE '%$filter_title%' AND plugin_id = '$plugin_filter'  ORDER BY created_at DESC";
+				$sql             = "SELECT $column_integrated_table FROM $table_name WHERE title LIKE %s AND plugin_id = %s ORDER BY created_at DESC";
+				$query_params    = array( '%' . $wpdb->esc_like( $filter_title ) . '%', $plugin_filter );
 			} elseif ( '' !== $filter_start_date && '' !== $filter_end_date && '' !== $plugin_filter ) {
 				$check_run_query = false;
-				$sql             = "SELECT $column_integrated_table FROM $table_name WHERE plugin_id = '$plugin_filter' AND created_at BETWEEN '$filter_start_date' AND '$filter_end_date' ORDER BY created_at DESC";
+				$sql             = "SELECT $column_integrated_table FROM $table_name WHERE plugin_id = %s AND created_at BETWEEN %s AND %s ORDER BY created_at DESC";
+				$query_params    = array( $plugin_filter, $filter_start_date, $filter_end_date );
 			} elseif ( '' !== $filter_start_date && '' !== $filter_end_date && '' !== $filter_title && '' !== $plugin_filter ) {
 				$check_run_query = false;
-				$sql             = "SELECT $column_integrated_table FROM $table_name WHERE title LIKE '%$filter_title%' AND plugin_id = '$plugin_filter' AND created_at BETWEEN '$filter_start_date' AND '$filter_end_date' ORDER BY created_at DESC";
+				$sql             = "SELECT $column_integrated_table FROM $table_name WHERE title LIKE %s AND plugin_id = %s AND created_at BETWEEN %s AND %s ORDER BY created_at DESC";
+				$query_params    = array( '%' . $wpdb->esc_like( $filter_title ) . '%', $plugin_filter, $filter_start_date, $filter_end_date );
 			} else {
 				$check_run_query = true;
-				$sql             = "SELECT $column_integrated_table FROM $table_name ORDER BY created_at DESC LIMIT $integrigration_api_limit OFFSET $offset ";
+				$sql             = "SELECT $column_integrated_table FROM $table_name ORDER BY created_at DESC LIMIT %d OFFSET %d";
+				$query_params    = array( $integrigration_api_limit, $offset );
+			}
+
+			// Prepare and execute the SQL query.
+			if ( ! empty( $query_params ) ) {
+				$results = $wpdb->get_results( $wpdb->prepare( $sql, $query_params ) ); // @codingStandardsIgnoreLine
+			} else {
+				$results = $wpdb->get_results( $wpdb->prepare( $sql, $query_params ) ); // @codingStandardsIgnoreLine
 			}
 
 			$new_responses = array();
 			$filed         = array();
-			$results = $wpdb->get_results( $sql ); // @codingStandardsIgnoreLine
 
 			if ( is_array( $results ) && count( $results ) > 0 ) {
 				foreach ( $results as $plugin_index => $data ) {
@@ -346,8 +363,7 @@ if ( ! class_exists( '\SAIFGS\RestApi\SAIFGS_Sheetmaping_List' ) ) {
 
 			$count = 10;
 			if ( $check_run_query ) {
-				$count_query        = "SELECT COUNT(*) AS total_count FROM $table_name";
-				$count_query_result = $wpdb->get_results( $count_query );// @codingStandardsIgnoreLine
+				$count_query_result = $wpdb->get_results( $wpdb->prepare("SELECT COUNT(*) AS total_count FROM $table_name") );// @codingStandardsIgnoreLine
 				$count              = $count_query_result[0]->total_count;
 			} else {
 				$count = count( $filed );

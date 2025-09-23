@@ -3,7 +3,7 @@ Contributors: sleekalgo
 Tags: Google sheet integrations, Spreadsheets Integrations, WooCommerce Orders, Contact forms, WP Integrations
 Requires at least: 5.1
 Tested up to: 6.8
-Requires PHP: 7.0
+Requires PHP: 5.6
 Stable tag: 1.0.0
 License: GPLv2 or later
 License URI: https://www.gnu.org/licenses/gpl-2.0.html
@@ -56,6 +56,7 @@ The *SA Integrations For Google Sheets* plugin has been built using the followin
 = 😍 Useful Links 📌 =
 * [Documentation](https://www.sleekalgo.com/sa-integrations-for-google-sheets/#installation-guide)
 * [Support Forum](https://wordpress.org/support/plugin/sa-integrations-for-google-sheets/)
+* [Github](https://github.com/Sleek-Algo/sa-integrations-for-google-sheets)
 * [Translations](https://translate.wordpress.org/projects/wp-plugins/sa-integrations-for-google-sheets/)
 
 = Become a Contributor 👨🏻‍💻 =

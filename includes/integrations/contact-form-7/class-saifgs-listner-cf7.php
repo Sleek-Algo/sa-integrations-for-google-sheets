@@ -60,15 +60,27 @@ if ( ! class_exists( '\SAIFGS\Integrations\ContactForm7\SAIFGS_Listner_CF7' ) ) 
 			if ( isset( $_FILES ) && ! empty( $_FILES ) ) {
 
 				// Get the name of the file input field dynamically from the $_FILES array.
-				$file_input_name = key( wp_unslash( $_FILES ) );
+				// SECURITY FIX: Use array_keys and sanitize the first key.
+				$files_keys = array_keys( $_FILES );
+				if ( empty( $files_keys ) ) {
+					return $posted_data;
+				}
+
+				$file_input_name = sanitize_key( $files_keys[0] );
 
 				// Access the file upload data.
 				if ( isset( $_FILES[ $file_input_name ] ) ) {
-					// Unslash and properly extract the $_FILES data. & Sanitize the input field name (optional if the index is validated elsewhere).
-					$file = sanitize_text_field( wp_unslash( $_FILES[ $file_input_name ] ) );
+					// SECURITY FIX: Properly sanitize each element of the $_FILES array.
+					$file = array(
+						'name'     => isset( $_FILES[ $file_input_name ]['name'] ) ? sanitize_file_name( wp_unslash( $_FILES[ $file_input_name ]['name'] ) ) : '',
+						'type'     => isset( $_FILES[ $file_input_name ]['type'] ) ? sanitize_mime_type( wp_unslash( $_FILES[ $file_input_name ]['type'] ) ) : '',
+						'tmp_name' => isset( $_FILES[ $file_input_name ]['tmp_name'] ) ? sanitize_text_field( $_FILES[ $file_input_name ]['tmp_name'] ) : '',  // phpcs:ignore WordPress.Security.NonceVerification.Missing, WordPress.Security.ValidatedSanitizedInput
+						'error'    => isset( $_FILES[ $file_input_name ]['error'] ) ? intval( $_FILES[ $file_input_name ]['error'] ) : 0,
+						'size'     => isset( $_FILES[ $file_input_name ]['size'] ) ? intval( $_FILES[ $file_input_name ]['size'] ) : 0,
+					);
 
 					// Ensure the file upload has no errors.
-					if ( isset( $file['error'] ) && UPLOAD_ERR_OK !== $file['error'] ) {
+					if ( UPLOAD_ERR_OK !== $file['error'] ) {
 						return $posted_data; // Return early if there's an upload error.
 					}
 
@@ -88,7 +100,7 @@ if ( ! class_exists( '\SAIFGS\Integrations\ContactForm7\SAIFGS_Listner_CF7' ) ) 
 					if ( ! empty( $file['tmp_name'] ) && is_uploaded_file( $file['tmp_name'] ) ) {
 
 						// Define the source and destination paths.
-						$source_file = sanitize_text_field( $file['tmp_name'] );
+						$source_file = $file['tmp_name'];
 
 						// Change this to your custom folder path.
 						$destination_folder = trailingslashit( SAIFGS_PATH_ATTACHMENTS );
@@ -252,8 +264,8 @@ if ( ! class_exists( '\SAIFGS\Integrations\ContactForm7\SAIFGS_Listner_CF7' ) ) 
 
 				$meta_data = array(
 					'entry_id'   => $entry_id,
-					'meta_key'   => $meta_key,
-					'meta_value' => $meta_value,
+					'meta_key'   => $meta_key, // phpcs:ignore WordPress.DB.SlowDBQuery.slow_db_query_meta_key -- Custom table structure
+					'meta_value' => $meta_value, // phpcs:ignore WordPress.DB.SlowDBQuery.slow_db_query_meta_value -- Custom table structure
 				);
 
 				// Insert each meta entry and check for errors.

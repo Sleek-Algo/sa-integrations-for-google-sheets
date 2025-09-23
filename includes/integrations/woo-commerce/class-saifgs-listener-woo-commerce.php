@@ -85,8 +85,8 @@ if ( ! class_exists( '\SAIFGS\Integrations\WooCommerce\SAIFGS_Listener_Woo_Comme
 						"SELECT `id`, `title`, `plugin_id`, `source_id`, `order_status`, 
 						`google_work_sheet_id`, `google_sheet_tab_id`, `google_sheet_column_map`, 
 						`google_sheet_column_range`, `disable_integration` 
-					FROM `{$wpdb->prefix}saifgs_integrations` 
-					WHERE `plugin_id` = %s",
+						FROM `{$wpdb->prefix}saifgs_integrations` 
+						WHERE `plugin_id` = %s",
 						'woocommerce'
 					)
 				);

@@ -46,14 +46,16 @@ if ( ! class_exists( '\\SAIFGS\\Pages\\SAIFGS_Dashboard' ) ) {
 		 * page, where users can manage Google Sheets integrations.
 		 */
 		public function saifgs_dashboard_menu() {
-			add_menu_page(
-				esc_html__( 'G-Sheets Integrations', 'sa-integrations-for-google-sheets' ),
-				esc_html__( 'G-Sheets Integrations', 'sa-integrations-for-google-sheets' ),
-				'manage_options',
-				'saifgs-dashboard',
-				array( $this, 'saifgs_dashboard_page' ),
-				'dashicons-media-spreadsheet'
-			);
+			if ( current_user_can( 'manage_options' ) ) {
+				add_menu_page(
+					esc_html__( 'G-Sheets Integrations', 'sa-integrations-for-google-sheets' ),
+					esc_html__( 'G-Sheets Integrations', 'sa-integrations-for-google-sheets' ),
+					'manage_options',
+					'saifgs-dashboard',
+					array( $this, 'saifgs_dashboard_page' ),
+					'dashicons-media-spreadsheet'
+				);
+			}
 		}
 
 		/**
@@ -103,12 +105,12 @@ if ( ! class_exists( '\\SAIFGS\\Pages\\SAIFGS_Dashboard' ) ) {
 					'language_dir'         => ( is_rtl() ? 'rtl' : 'ltr' ),
 					'text_domain'          => SAIFGS_TEXT_DOMAIN,
 					'purchase_premium_url' => $premium_url,
+					'nonce'                => wp_create_nonce( 'wp_rest' ),
 				);
 				wp_localize_script( 'saifgs-app-script', 'saifgs_customizations_localized_objects', apply_filters( 'saifgs_customizations_localized_objects', $saifgs_customizations_localized_objects ) );
 				wp_enqueue_script( 'saifgs-app-script' );
-				/**
-				 * Set Translations
-				 */
+
+				// Set Translations.
 				wp_set_script_translations(
 					'saifgs-app-script',
 					'sa-integrations-for-google-sheets',
