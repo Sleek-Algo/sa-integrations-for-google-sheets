@@ -6,7 +6,7 @@
  * Description: This plugin connects your WordPress website with Google Sheets, enabling automatic synchronization of form submissions and WooCommerce order data.
  * Version: 1.0.0
  * Requires at least: 5.1
- * Requires PHP: 5.6
+ * Requires PHP: 7.0
  * Author: SleekAlgo
  * Author URI: https://www.sleekalgo.com/
  * License: GPL v2 or later
