@@ -100,12 +100,14 @@ if ( ! class_exists( '\\SAIFGS\\Pages\\SAIFGS_Dashboard' ) ) {
 					)
 				);
 				$premium_url                             = 'https://www.sleekalgo.com/sa-integrations-for-google-sheets/';
+				$btn_google_signin = SAIFGS_URL_ASSETS_IMAGES . '/btn_google_signin_dark_pressed_web.gif';
 				$saifgs_customizations_localized_objects = array(
 					'language'             => get_user_locale(),
 					'language_dir'         => ( is_rtl() ? 'rtl' : 'ltr' ),
 					'text_domain'          => SAIFGS_TEXT_DOMAIN,
 					'purchase_premium_url' => $premium_url,
 					'nonce'                => wp_create_nonce( 'wp_rest' ),
+					'btn_google_signin'		=> $btn_google_signin,
 				);
 				wp_localize_script( 'saifgs-app-script', 'saifgs_customizations_localized_objects', apply_filters( 'saifgs_customizations_localized_objects', $saifgs_customizations_localized_objects ) );
 				wp_enqueue_script( 'saifgs-app-script' );

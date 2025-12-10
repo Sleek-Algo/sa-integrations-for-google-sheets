@@ -39,6 +39,7 @@ return array(
     'SAIFGS\\RestApi\\SAIFGS_Integration_Plugin_List_API' => $baseDir . '/includes/rest-api/class-saifgs-integration-plugin-list-api.php',
     'SAIFGS\\RestApi\\SAIFGS_Integrations_API' => $baseDir . '/includes/rest-api/class-saifgs-integrations-api.php',
     'SAIFGS\\RestApi\\SAIFGS_Sheetmaping_List' => $baseDir . '/includes/rest-api/class-saifgs-sheetmaping-list.php',
+    'SAIFGS\\Settings\\SAIFGS_Auto_Connect_Google_Signin' => $baseDir . '/includes/settings/class-saifgs-auto-connect-google-signin.php',
     'SAIFGS\\Settings\\SAIFGS_General_Settings' => $baseDir . '/includes/settings/class-saifgs-general-settings.php',
     'SAIFGS\\Traits\\SAIFGS_Helpers' => $baseDir . '/includes/traits/saifgs-helpers.php',
     'SAIFGS\\Traits\\SAIFGS_RestAPI' => $baseDir . '/includes/traits/saifgs-rest-api.php',

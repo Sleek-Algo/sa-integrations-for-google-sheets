@@ -69,6 +69,7 @@ if ( ! class_exists( '\SAIFGS\Bootstrap\SAIFGS_App' ) ) {
 		 */
 		public function saifgs_init_settings() {
 			\SAIFGS\Settings\SAIFGS_General_Settings::get_instance();
+			\SAIFGS\Settings\SAIFGS_Auto_Connect_Google_Signin::get_instance();
 		}
 
 		/**

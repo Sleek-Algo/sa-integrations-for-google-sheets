@@ -71,3 +71,65 @@
         }
     }
 }
+
+// JDK Styling for auto connect
+.auto-connect-section {
+    margin-bottom: 24px;
+    
+    .section-subtitle {
+      font-size: 16px;
+      font-weight: 600;
+      margin-bottom: 16px;
+      color: #262626;
+    }
+    
+    .auth-steps-card {
+      margin: 20px 0;
+      
+      .ant-steps-item-title {
+        font-weight: 500;
+      }
+      
+      .ant-tag {
+        margin-top: 4px;
+      }
+    }
+    
+    .auth-actions {
+      margin-top: 24px;
+      text-align: center;
+      
+      .google-auth-btn {
+        height: 48px;
+        font-size: 16px;
+        font-weight: 500;
+        padding: 0 32px;
+        
+        .anticon {
+          font-size: 18px;
+        }
+      }
+    }
+    
+    .privacy-card {
+      border: 1px solid #d6e4ff;
+      
+      .privacy-content {
+        padding: 8px 0;
+      }
+    }
+  }
+  
+  // Responsive design
+  @media (max-width: 768px) {
+    .auto-connect-section {
+      .auth-actions {
+        text-align: left;
+        
+        .google-auth-btn {
+          width: 100%;
+        }
+      }
+    }
+  }
+//   End JDk auto connect

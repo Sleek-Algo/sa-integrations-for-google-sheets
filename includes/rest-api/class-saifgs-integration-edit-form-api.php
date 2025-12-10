@@ -118,15 +118,78 @@ if ( ! class_exists( '\SAIFGS\RestApi\SAIFGS_Integration_Edit_Form_API' ) ) {
 			}
 			$result = $results[0];
 
-			// If passed parameter is Array and Not String  || Creating Query URL.
-			$request = 'https://sheets.googleapis.com/v4/spreadsheets/' . $result->google_work_sheet_id . '/values/' . $result->google_sheet_tab_id . '!A1:YZ1';
+			// // If passed parameter is Array and Not String  || Creating Query URL.
+			// $request = 'https://sheets.googleapis.com/v4/spreadsheets/' . $result->google_work_sheet_id . '/values/' . $result->google_sheet_tab_id . '!A1:YZ1';
 
-			if ( class_exists( '\SAIFGS\Classes\SAIFGS_Google_Apis_Authenticator' ) ) {
-				$client = \SAIFGS\Classes\SAIFGS_Google_Apis_Authenticator::get_instance();
-			} else {
-				$client = '';
+			// if ( class_exists( '\SAIFGS\Classes\SAIFGS_Google_Apis_Authenticator' ) ) {
+			// 	$client = \SAIFGS\Classes\SAIFGS_Google_Apis_Authenticator::get_instance();
+			// } else {
+			// 	$client = '';
+			// }
+			// $response = $client->saifgs_request( $request );
+
+			// =========== YEH SECTION CHANGE HOGI ===========
+			// Old code:
+			// $request_url = 'https://sheets.googleapis.com/v4/spreadsheets/' . $result->google_work_sheet_id . '/values/' . $result->google_sheet_tab_id . '!A1:YZ1';
+			// 
+			// if ( class_exists( '\SAIFGS\Classes\SAIFGS_Google_Apis_Authenticator' ) ) {
+			//     $client = \SAIFGS\Classes\SAIFGS_Google_Apis_Authenticator::get_instance();
+			// } else {
+			//     $client = '';
+			// }
+			// $response = $client->saifgs_request( $request );
+			
+			// New code: Use active access token
+			$access_token = $this->saifgs_get_active_access_token();
+			if ( empty( $access_token ) ) {
+				wp_send_json_error(
+					array( 'error' => esc_html__( 'Authentication failed. Please check your Google connection.', 'sa-integrations-for-google-sheets' ) ),
+					401
+				);
 			}
-			$response = $client->saifgs_request( $request );
+			
+			$request_url = 'https://sheets.googleapis.com/v4/spreadsheets/' . $result->google_work_sheet_id . '/values/' . $result->google_sheet_tab_id . '!A1:YZ1';
+			
+			$api_response = wp_remote_get( $request_url, array(
+				'headers' => array(
+					'Authorization' => 'Bearer ' . $access_token,
+				),
+				'timeout' => 15,
+			) );
+			
+			if ( is_wp_error( $api_response ) ) {
+				error_log( 'SAIFGS Edit Form: Failed to fetch sheet columns - ' . $api_response->get_error_message() );
+				wp_send_json_error(
+					array( 'error' => esc_html__( 'Failed to fetch Google Sheet data: ', 'sa-integrations-for-google-sheets' ) . $api_response->get_error_message() ),
+					500
+				);
+			}
+			
+			$response_code = wp_remote_retrieve_response_code( $api_response );
+			$body = wp_remote_retrieve_body( $api_response );
+			
+			if ( $response_code === 401 ) {
+				error_log( 'SAIFGS Edit Form: Authentication failed (401) when fetching sheet columns' );
+				// If this was an OAuth token, mark it as expired
+				if ( $this->saifgs_is_oauth_token() ) {
+					update_option( 'saifgs_auto_connect_auth_expired', 'true' );
+				}
+				wp_send_json_error(
+					array( 'error' => esc_html__( 'Authentication expired. Please reconnect your Google account.', 'sa-integrations-for-google-sheets' ) ),
+					401
+				);
+			}
+			
+			if ( $response_code !== 200 ) {
+				error_log( 'SAIFGS Edit Form: Google Sheets API returned error code: ' . $response_code . ' - Body: ' . $body );
+				wp_send_json_error(
+					array( 'error' => esc_html__( 'Google Sheets API returned an error: ', 'sa-integrations-for-google-sheets' ) . $response_code ),
+					$response_code
+				);
+			}
+			
+			$response = json_decode( $body, true );
+			// =========== CHANGE END ===========
 
 			// If There are no column title or First ROW is Empty Then Send a Arry with key without value.
 			if ( ! isset( $response['values'][0] ) ) {
@@ -199,7 +262,8 @@ if ( ! class_exists( '\SAIFGS\RestApi\SAIFGS_Integration_Edit_Form_API' ) ) {
 								$column_map = array_column( $google_sheet_mapping_data, 'google_sheet_index' );
 
 								foreach ( $header_row as $index => $column_name ) {
-									$column_location = chr( 65 + $index ) . '1';
+									// $column_location = chr( 65 + $index ) . '1';
+									$column_location = $this->saifgs_get_column_location( $index );
 
 									if ( ! in_array( $column_location, $column_map, true ) ) {
 										$last_key++;

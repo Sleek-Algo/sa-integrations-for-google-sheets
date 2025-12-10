@@ -1,14 +1,6 @@
 import React from 'react';
 import { useState, useEffect } from 'react';
-import {
-	ProFormSegmented,
-	EditableProTable,
-	ProFormSelect,
-	ProFormText,
-	ProCard,
-	ModalForm,
-	ProForm,
-} from '@ant-design/pro-components';
+import { ProFormSegmented, EditableProTable, ProFormSelect, ProFormText, ProCard, ModalForm, ProForm, } from '@ant-design/pro-components';
 import { message, Button, Tooltip, Tag, Segmented } from 'antd';
 import { InfoCircleOutlined } from '@ant-design/icons';
 import apiFetch from '@wordpress/api-fetch';
@@ -18,15 +10,11 @@ import '../../styles/form.scss';
 const AddIntegration = ( { closeModel } ) => {
 	const [ formRef ] = ProForm.useForm();
 	//  Set plugin form by plugin list
-	const [ selectedPluginID, setSelectedPluginID ] =
-		useState( 'contact_form_7' );
-	const [ pluginSelectedFormFiled, setPluginSelectedFormFiled ] = useState(
-		[]
-	);
+	const [ selectedPluginID, setSelectedPluginID ] = useState( 'contact_form_7' );
+	const [ pluginSelectedFormFiled, setPluginSelectedFormFiled ] = useState( [] );
 
 	// set plugin form fields
-	const [ selectedSourceIntityID, setSelectedSourceIntityID ] =
-		useState( '' );
+	const [ selectedSourceIntityID, setSelectedSourceIntityID ] = useState( '' );
 	const [ selectedOrderStatus, setSelectedOrderStatus ] = useState( '' );
 	const [ Pluginformfields, setpluginformfields ] = useState( '' ); // update
 
@@ -35,11 +23,9 @@ const AddIntegration = ( { closeModel } ) => {
 	const [ googleSheetTabList, setGoogleSheetTabList ] = useState( [] );
 
 	// set googgle sheet coulmn by google sheet tab
-	const [ selectedGoogleSheetTab, setSelectedGoogleSheetTab ] =
-		useState( '' );
+	const [ selectedGoogleSheetTab, setSelectedGoogleSheetTab ] = useState( '' );
 
-	const [ integrationMapSourceData, setintegrationMapSourceData ] =
-		useState( null );
+	const [ integrationMapSourceData, setintegrationMapSourceData ] = useState( null );
 	const [ editableKeys, setEditableRowKeys ] = useState( null );
 	const [ mapping, setMapping ] = useState( false );
 
@@ -47,19 +33,10 @@ const AddIntegration = ( { closeModel } ) => {
 	const [ sourceFieldsData, setSourceFieldsData ] = useState( '' );
 	const [ googleFieldsData, setGoogleFieldsData ] = useState( '' );
 
-	const customLocale = {
-		emptyText: __(
-			'Please check your worksheet column labels for mapping',
-			'sa-integrations-for-google-sheets'
-		),
-	};
+	const customLocale = { emptyText: __( 'Please check your worksheet column labels for mapping', 'sa-integrations-for-google-sheets' ), };
 	message.config( { top: 100 } );
 	// Get Form Fileds from API
-	const getSourceFields = async (
-		selectedPluginID,
-		selectedSourceIntityID,
-		selectedOrderStatus
-	) => {
+	const getSourceFields = async ( selectedPluginID, selectedSourceIntityID, selectedOrderStatus ) => {
 		if ( selectedPluginID == '' || selectedSourceIntityID == '' ) {
 			return;
 		}
@@ -77,10 +54,7 @@ const AddIntegration = ( { closeModel } ) => {
 		} );
 	};
 
-	const getGoogleFields = async (
-		selectedGoogleSheet,
-		selectedGoogleSheetTab
-	) => {
+	const getGoogleFields = async ( selectedGoogleSheet, selectedGoogleSheetTab ) => {
 		if ( selectedGoogleSheet == '' || selectedGoogleSheetTab == '' ) {
 			return;
 		}
@@ -145,29 +119,14 @@ const AddIntegration = ( { closeModel } ) => {
 					method: 'POST',
 					data: formData,
 				} ).then( ( response ) => {
-					message.success(
-						__(
-							'Congratulations! Your settings have been successfully saved.',
-							'sa-integrations-for-google-sheets'
-						)
-					);
+					message.success( __( 'Congratulations! Your settings have been successfully saved.', 'sa-integrations-for-google-sheets' ) );
 					closeModel( false, true ); //Pass true to indicate data was saved
 				} );
 			} else {
-				message.error(
-					__(
-						'No data saved. The Google sheet is empty.',
-						'sa-integrations-for-google-sheets'
-					)
-				);
+				message.error( __( 'No data saved. The Google sheet is empty.', 'sa-integrations-for-google-sheets' ) );
 			}
 		} else {
-			message.error(
-				__(
-					'Please generate map before saving.',
-					'sa-integrations-for-google-sheets'
-				)
-			);
+			message.error( __( 'Please generate map before saving.', 'sa-integrations-for-google-sheets' ) );
 		}
 	};
 
@@ -175,60 +134,25 @@ const AddIntegration = ( { closeModel } ) => {
 	const handleDataMapping = async () => {
 		setMapping( false );
 		if ( selectedPluginID == '' ) {
-			message.error(
-				__(
-					'Please Select a Plugin.',
-					'sa-integrations-for-google-sheets'
-				)
-			);
+			message.error( __( 'Please Select a Plugin.', 'sa-integrations-for-google-sheets' ) );
 			return;
 		} else if ( selectedSourceIntityID == '' ) {
-			message.error(
-				__(
-					'Please Select a Source Intity.',
-					'sa-integrations-for-google-sheets'
-				)
-			);
+			message.error( __( 'Please Select a Source Intity.', 'sa-integrations-for-google-sheets' ) );
 			return;
-		} else if (
-			selectedOrderStatus == '' &&
-			selectedPluginID == 'woocommerce'
-		) {
-			message.error(
-				__(
-					'Please Select a Order Status.',
-					'sa-integrations-for-google-sheets'
-				)
-			);
+		} else if ( selectedOrderStatus == '' && selectedPluginID == 'woocommerce' ) {
+			message.error( __( 'Please Select a Order Status.', 'sa-integrations-for-google-sheets' ) );
 			return;
 		} else if ( selectedGoogleSheet == '' ) {
-			message.error(
-				__(
-					'Please Select a Spreadsheet & Worksheet.',
-					'sa-integrations-for-google-sheets'
-				)
-			);
+			message.error( __( 'Please Select a Spreadsheet & Worksheet.', 'sa-integrations-for-google-sheets' ) );
 			return;
 		} else if ( selectedGoogleSheetTab == '' ) {
-			message.error(
-				__(
-					'Please Select a Spreadsheet Tab.',
-					'sa-integrations-for-google-sheets'
-				)
-			);
+			message.error( __( 'Please Select a Spreadsheet Tab.', 'sa-integrations-for-google-sheets' ) );
 			return;
 		}
 
-		const googleFieldsResponse = await getGoogleFields(
-			selectedGoogleSheet,
-			selectedGoogleSheetTab
-		);
+		const googleFieldsResponse = await getGoogleFields( selectedGoogleSheet, selectedGoogleSheetTab );
 
-		const pluginFormFieldsResponse = await getSourceFields(
-			selectedPluginID,
-			selectedSourceIntityID,
-			selectedOrderStatus
-		);
+		const pluginFormFieldsResponse = await getSourceFields( selectedPluginID, selectedSourceIntityID, selectedOrderStatus );
 
 		const NewIntegrationMapSourceData = await googleFieldsResponse.map(
 			( googleSheetCoulmn, index ) => {
@@ -245,19 +169,14 @@ const AddIntegration = ( { closeModel } ) => {
 
 		setintegrationMapSourceData( NewIntegrationMapSourceData );
 		setMapping( true );
-		const NewIntegrationMapSourceDataKeys = googleFieldsResponse.map(
-			( googleSheetCoulmn ) => googleSheetCoulmn?.key
-		);
+		const NewIntegrationMapSourceDataKeys = googleFieldsResponse.map( ( googleSheetCoulmn ) => googleSheetCoulmn?.key );
 		setEditableRowKeys( NewIntegrationMapSourceDataKeys );
 	};
 
 	return (
 		<div className="saifgs-form">
 			<ModalForm
-				title={ __(
-					'Add Sheet Integration',
-					'sa-integrations-for-google-sheets'
-				) }
+				title={ __( 'Add Sheet Integration', 'sa-integrations-for-google-sheets' ) }
 				form={ formRef }
 				open={ closeModel ? true : false }
 				autoFocusFirstInput
@@ -277,19 +196,12 @@ const AddIntegration = ( { closeModel } ) => {
 					values.selected_plugin_id_data = selectedPluginID;
 					values.saifgs_source_plugin = selectedPluginID;
 					values.add_integration_form = 'add_integration_Form';
-
 					handleClick( values );
 				} }
 				submitter={ {
 					searchConfig: {
-						resetText: __(
-							'Cancel',
-							'sa-integrations-for-google-sheets'
-						),
-						submitText: __(
-							'Save',
-							'sa-integrations-for-google-sheets'
-						),
+						resetText: __( 'Cancel', 'sa-integrations-for-google-sheets' ),
+						submitText: __( 'Save', 'sa-integrations-for-google-sheets' ),
 					},
 					resetButtonProps: {},
 				} }
@@ -298,43 +210,22 @@ const AddIntegration = ( { closeModel } ) => {
 					<ProFormText
 						colProps={ { xl: 18, md: 24 } }
 						name="saifgs_title"
-						label={ __(
-							'Title',
-							'sa-integrations-for-google-sheets'
-						) }
-						tooltip={ __(
-							'Enter the title of google sheet integration.',
-							'sa-integrations-for-google-sheets'
-						) }
-						placeholder={ __(
-							'Title',
-							'sa-integrations-for-google-sheets'
-						) }
+						label={ __( 'Title', 'sa-integrations-for-google-sheets' ) }
+						tooltip={ __( 'Enter the title of google sheet integration.', 'sa-integrations-for-google-sheets' ) }
+						placeholder={ __( 'Title', 'sa-integrations-for-google-sheets' ) }
 						rules={ [
 							{
 								required: true,
-								message: __(
-									'Please add a title',
-									'sa-integrations-for-google-sheets'
-								),
+								message: __( 'Please add a title', 'sa-integrations-for-google-sheets' ),
 							},
 						] }
 					/>
 
 					<ProFormSegmented
-						label={ __(
-							'Source Plugin',
-							'sa-integrations-for-google-sheets'
-						) }
+						label={ __( 'Source Plugin', 'sa-integrations-for-google-sheets' ) }
 						name="saifgs_source_plugin"
-						placeholder={ __(
-							'Source Plugin',
-							'sa-integrations-for-google-sheets'
-						) }
-						tooltip={ __(
-							'Select the plugin that you want to use for your integration.',
-							'sa-integrations-for-google-sheets'
-						) }
+						placeholder={ __( 'Source Plugin', 'sa-integrations-for-google-sheets' ) }
+						tooltip={ __( 'Select the plugin that you want to use for your integration.', 'sa-integrations-for-google-sheets' ) }
 						request={ async () => {
 							return await apiFetch( {
 								path: '/saifgs/v1/integrated-plugins-list/',
@@ -342,13 +233,8 @@ const AddIntegration = ( { closeModel } ) => {
 							} ).then( ( response ) => {
 								var plugins_list = [];
 								response.map( ( pluginData ) => {
-									if (
-										pluginData?.usability_status !== 'no'
-									) {
-										plugins_list.push( {
-											label: pluginData?.title,
-											value: pluginData?.key,
-										} );
+									if ( pluginData?.usability_status !== 'no' ) {
+										plugins_list.push( { label: pluginData?.title, value: pluginData?.key, } );
 									}
 								} );
 								setSelectedPluginID( plugins_list[ 0 ]?.value );
@@ -370,75 +256,42 @@ const AddIntegration = ( { closeModel } ) => {
 					{ selectedPluginID == 'woocommerce' && (
 						<ProFormSelect
 							colProps={ { xl: 18, md: 24 } }
-							label={ __(
-								'Order Status',
-								'sa-integrations-for-google-sheets'
-							) }
+							label={ __( 'Order Status', 'sa-integrations-for-google-sheets' ) }
 							name="saifgs_order_status"
-							tooltip={ __(
-								'Select the status of the WooCommerce order',
-								'sa-integrations-for-google-sheets'
-							) }
-							placeholder={ __(
-								'Order status',
-								'sa-integrations-for-google-sheets'
-							) }
+							tooltip={ __( 'Select the status of the WooCommerce order', 'sa-integrations-for-google-sheets' ) }
+							placeholder={ __( 'Order status', 'sa-integrations-for-google-sheets' ) }
 							mode="multiple"
 							request={ async () => [
 								{
-									label: __(
-										'Pending payment',
-										'sa-integrations-for-google-sheets'
-									),
+									label: __( 'Pending payment', 'sa-integrations-for-google-sheets' ),
 									value: 'pending',
 								},
 								{
-									label: __(
-										'Processing ',
-										'sa-integrations-for-google-sheets'
-									),
+									label: __( 'Processing ', 'sa-integrations-for-google-sheets' ),
 									value: 'processing',
 								},
 								{
-									label: __(
-										'On hold',
-										'sa-integrations-for-google-sheets'
-									),
+									label: __( 'On hold', 'sa-integrations-for-google-sheets' ),
 									value: 'on-hold',
 								},
 								{
-									label: __(
-										'Completed',
-										'sa-integrations-for-google-sheets'
-									),
+									label: __( 'Completed', 'sa-integrations-for-google-sheets' ),
 									value: 'completed',
 								},
 								{
-									label: __(
-										'Cancelled',
-										'sa-integrations-for-google-sheets'
-									),
+									label: __( 'Cancelled', 'sa-integrations-for-google-sheets' ),
 									value: 'cancelled',
 								},
 								{
-									label: __(
-										'Refunded',
-										'sa-integrations-for-google-sheets'
-									),
+									label: __( 'Refunded', 'sa-integrations-for-google-sheets' ),
 									value: 'refunded',
 								},
 								{
-									label: __(
-										'Failed',
-										'sa-integrations-for-google-sheets'
-									),
+									label: __( 'Failed', 'sa-integrations-for-google-sheets' ),
 									value: 'failed',
 								},
 								{
-									label: __(
-										'Checkout Draft',
-										'sa-integrations-for-google-sheets'
-									),
+									label: __( 'Checkout Draft', 'sa-integrations-for-google-sheets' ),
 									value: 'checkout-draft',
 								},
 							] }
@@ -451,19 +304,10 @@ const AddIntegration = ( { closeModel } ) => {
 
 					<ProFormSelect
 						colProps={ { xl: 18, md: 24 } }
-						label={ __(
-							'Source Entity',
-							'sa-integrations-for-google-sheets'
-						) }
+						label={ __( 'Source Entity', 'sa-integrations-for-google-sheets' ) }
 						name="saifgs_source_intity"
-						tooltip={ __(
-							'Select the form that you wish to use for your integration.',
-							'sa-integrations-for-google-sheets'
-						) }
-						placeholder={ __(
-							'Source Entity',
-							'sa-integrations-for-google-sheets'
-						) }
+						tooltip={ __( 'Select the form that you wish to use for your integration.', 'sa-integrations-for-google-sheets' ) }
+						placeholder={ __( 'Source Entity', 'sa-integrations-for-google-sheets' ) }
 						options={ pluginSelectedFormFiled }
 						onChange={ async ( change, event ) => {
 							setMapping( false );
@@ -473,10 +317,7 @@ const AddIntegration = ( { closeModel } ) => {
 						rules={ [
 							{
 								required: true,
-								message: __(
-									'Please select a Source Entity',
-									'sa-integrations-for-google-sheets'
-								),
+								message: __( 'Please select a Source Entity', 'sa-integrations-for-google-sheets' ),
 							},
 						] }
 					/>
@@ -484,18 +325,9 @@ const AddIntegration = ( { closeModel } ) => {
 					<ProFormSelect
 						colProps={ { xl: 18, md: 24 } }
 						name="saifgs_spreadsheet_worksheet"
-						label={ __(
-							'Spreadsheet & Worksheet',
-							'sa-integrations-for-google-sheets'
-						) }
-						tooltip={ __(
-							'Select the specified google spreadsheet that you wish to integrate.',
-							'sa-integrations-for-google-sheets'
-						) }
-						placeholder={ __(
-							'Spreadsheet & Worksheet',
-							'sa-integrations-for-google-sheets'
-						) }
+						label={ __( 'Spreadsheet & Worksheet', 'sa-integrations-for-google-sheets' ) }
+						tooltip={ __( 'Select the specified google spreadsheet that you wish to integrate.', 'sa-integrations-for-google-sheets' ) }
+						placeholder={ __( 'Spreadsheet & Worksheet', 'sa-integrations-for-google-sheets' ) }
 						request={ async () => {
 							return await apiFetch( {
 								path: '/saifgs/v1/google-drive-sheets/',
@@ -519,28 +351,16 @@ const AddIntegration = ( { closeModel } ) => {
 						rules={ [
 							{
 								required: true,
-								message: __(
-									'Please select a worksheet',
-									'sa-integrations-for-google-sheets'
-								),
+								message: __( 'Please select a worksheet', 'sa-integrations-for-google-sheets' ),
 							},
 						] }
 					/>
 					<ProFormSelect
 						colProps={ { xl: 18, md: 24 } }
 						name="saifgs_spreadsheet_tab"
-						label={ __(
-							'Spreadsheet Tabs',
-							'sa-integrations-for-google-sheets'
-						) }
-						tooltip={ __(
-							'Select the spreadsheet tab on which you want to see your data reflected',
-							'sa-integrations-for-google-sheets'
-						) }
-						placeholder={ __(
-							'Spreadsheet Tabs',
-							'sa-integrations-for-google-sheets'
-						) }
+						label={ __( 'Spreadsheet Tabs', 'sa-integrations-for-google-sheets' ) }
+						tooltip={ __( 'Select the spreadsheet tab on which you want to see your data reflected', 'sa-integrations-for-google-sheets' ) }
+						placeholder={ __( 'Spreadsheet Tabs', 'sa-integrations-for-google-sheets' ) }
 						options={ googleSheetTabList }
 						onChange={ async ( change, event ) => {
 							setMapping( false );
@@ -550,10 +370,7 @@ const AddIntegration = ( { closeModel } ) => {
 						rules={ [
 							{
 								required: true,
-								message: __(
-									'Please select spreadsheet tab',
-									'sa-integrations-for-google-sheets'
-								),
+								message: __( 'Please select spreadsheet tab', 'sa-integrations-for-google-sheets' ),
 							},
 						] }
 					/>
@@ -561,15 +378,9 @@ const AddIntegration = ( { closeModel } ) => {
 						colProps={ { xl: 24, md: 6 } }
 						label={
 							<span className="disabled-prem">
-								{ __(
-									'Automatically update Google Sheet record',
-									'sa-integrations-for-google-sheets'
-								) }
+								{ __( 'Automatically update Google Sheet record', 'sa-integrations-for-google-sheets' ) }
 								<Tooltip
-									title={ __(
-										'Premium',
-										'sa-integrations-for-google-sheets'
-									) }
+									title={ __( 'Premium', 'sa-integrations-for-google-sheets' ) }
 									placement="top"
 								>
 									<InfoCircleOutlined />
@@ -577,27 +388,17 @@ const AddIntegration = ( { closeModel } ) => {
 							</span>
 						}
 						name="saifgs_disable_integration"
-						tooltip={ __(
-							'This feature is available in the premium version only',
-							'sa-integrations-for-google-sheets'
-						) }
+						tooltip={ __( 'This feature is available in the premium version only', 'sa-integrations-for-google-sheets' ) }
 						fieldProps={ {
-							className:
-								'saifgs-blurred-table saifgs-disbale-mapping-btn',
+							className: 'saifgs-blurred-table saifgs-disbale-mapping-btn',
 						} }
 						request={ async () => [
 							{
-								label: __(
-									'Enable',
-									'sa-integrations-for-google-sheets'
-								),
+								label: __( 'Enable', 'sa-integrations-for-google-sheets' ),
 								value: 'yes',
 							},
 							{
-								label: __(
-									'Disable',
-									'sa-integrations-for-google-sheets'
-								),
+								label: __( 'Disable', 'sa-integrations-for-google-sheets' ),
 								value: 'no',
 							},
 						] }
@@ -611,22 +412,12 @@ const AddIntegration = ( { closeModel } ) => {
 						type="primary"
 						onClick={ () => handleDataMapping( 0 ) }
 					>
-						{ __(
-							'Generate Mapping!',
-							'sa-integrations-for-google-sheets'
-						) }
+						{ __( 'Generate Mapping!', 'sa-integrations-for-google-sheets' ) }
 					</Button>
 				</ProCard>
 				{ mapping == true && (
 					<ProCard
-						title={
-							<h2>
-								{ __(
-									'Worksheet Mapping',
-									'sa-integrations-for-google-sheets'
-								) }
-							</h2>
-						}
+						title={ <h2> { __( 'Worksheet Mapping', 'sa-integrations-for-google-sheets' ) } </h2> }
 					>
 						<>
 							<EditableProTable
@@ -634,10 +425,7 @@ const AddIntegration = ( { closeModel } ) => {
 								maxLength={ 0 }
 								columns={ [
 									{
-										title: __(
-											'Google Sheet Column',
-											'sa-integrations-for-google-sheets'
-										),
+										title: __( 'Google Sheet Column', 'sa-integrations-for-google-sheets' ),
 										dataIndex: 'google_sheet_index',
 										key: 'google_sheet_index',
 										valueType: 'select',
@@ -654,10 +442,7 @@ const AddIntegration = ( { closeModel } ) => {
 										render: ( _, row ) => {},
 									},
 									{
-										title: __(
-											'Source Date Field',
-											'sa-integrations-for-google-sheets'
-										),
+										title: __( 'Source Date Field', 'sa-integrations-for-google-sheets' ),
 										dataIndex: 'source_filed_index',
 										key: 'source_filed_index',
 										valueType: 'select',
@@ -666,54 +451,34 @@ const AddIntegration = ( { closeModel } ) => {
 											options: sourceFieldsData.map(
 												( field ) => {
 													// Check if the field is premium
-													const isPremium =
-														field.is_premium ===
-														'yes';
+													const isPremium = field.is_premium === 'yes';
 													return {
 														label: (
 															<span>
 																{ field.label }
-																{ isPremium && (
-																	<Tag color="gold">
-																		{ __(
-																			'(Premium)',
-																			'sa-integrations-for-google-sheets'
-																		) }
-																	</Tag>
-																) }
+																{ isPremium && ( <Tag color="gold"> { __( '(Premium)', 'sa-integrations-for-google-sheets' ) } </Tag> ) }
 															</span>
 														),
 														value: field.value,
-														disabled:
-															field.is_premium ===
-															'yes', // Disable the field if premium
+														disabled: field.is_premium === 'yes', // Disable the field if premium
 													};
 												}
 											),
 										} ),
 									},
 									{
-										title: __(
-											'Auto Sync',
-											'sa-integrations-for-google-sheets'
-										),
+										title: __( 'Auto Sync', 'sa-integrations-for-google-sheets' ),
 										dataIndex: 'source_filed_index_toggle',
 										key: 'source_filed_index_toggle',
 										valueType: 'segmented',
 										fieldProps: () => ( {
 											options: [
 												{
-													label: __(
-														'Enabled',
-														'sa-integrations-for-google-sheets'
-													),
+													label: __( 'Enabled', 'sa-integrations-for-google-sheets' ),
 													value: true,
 												},
 												{
-													label: __(
-														'Disabled',
-														'sa-integrations-for-google-sheets'
-													),
+													label: __( 'Disabled', 'sa-integrations-for-google-sheets' ),
 													value: false,
 												},
 											],
@@ -731,27 +496,16 @@ const AddIntegration = ( { closeModel } ) => {
 													width: '',
 												} }
 											>
-												<Tooltip
-													title={ __(
-														'This feature is available in the premium version only',
-														'sa-integrations-for-google-sheets'
-													) }
-												>
+												<Tooltip title={ __( 'This feature is available in the premium version only', 'sa-integrations-for-google-sheets' ) } >
 													<Segmented
 														className="saifgs-blurred-table saifgs-disbale-mapping-btn"
 														options={ [
 															{
-																label: __(
-																	'Enabled',
-																	'sa-integrations-for-google-sheets'
-																),
+																label: __( 'Enabled', 'sa-integrations-for-google-sheets' ),
 																value: true,
 															},
 															{
-																label: __(
-																	'Disabled',
-																	'sa-integrations-for-google-sheets'
-																),
+																label: __( 'Disabled', 'sa-integrations-for-google-sheets' ),
 																value: false,
 															},
 														] }
@@ -776,9 +530,7 @@ const AddIntegration = ( { closeModel } ) => {
 									type: 'multiple',
 									editableKeys,
 									onValuesChange: ( record, recordList ) => {
-										setintegrationMapSourceData(
-											recordList
-										);
+										setintegrationMapSourceData( recordList );
 									},
 									onChange: setEditableRowKeys,
 								} }

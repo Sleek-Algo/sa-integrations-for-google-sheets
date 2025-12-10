@@ -190,8 +190,8 @@ if ( ! class_exists( '\SAIFGS\Integrations\WooCommerce\SAIFGS_Listener_Woo_Comme
 		 * Inserts data into a Google Sheet.
 		 *
 		 * @param array  $data               The data to be inserted.
-		 * @param string $google_work_sheet_id The Google worksheet ID.
-		 * @param string $google_sheet_tab_id The Google sheet tab ID.
+		 * @param string $spreadsheet_id     The Google worksheet ID.
+		 * @param string $sheet_tab_id       The Google sheet tab ID.
 		 * @param int    $order_id           The order ID associated with the data.
 		 * @param string $range              The cell range for insertion.
 		 * @param array  $integration_data   Integration mapping data.
@@ -199,9 +199,9 @@ if ( ! class_exists( '\SAIFGS\Integrations\WooCommerce\SAIFGS_Listener_Woo_Comme
 		 *
 		 * @throws \Exception                If the insertion process fails.
 		 */
-		private function saifgs_insert_data_to_google_sheet( $data, $google_work_sheet_id, $google_sheet_tab_id, $order_id, $range, $integration_data, $status ) {
+		private function saifgs_insert_data_to_google_sheet( $data, $spreadsheet_id, $sheet_tab_id, $order_id, $range, $integration_data, $status ) {
 			global $wpdb;
-			if ( ! is_array( $data ) || empty( $google_work_sheet_id ) || empty( $google_sheet_tab_id ) || empty( $range ) || empty( $integration_data ) || empty( $order_id ) ) {
+			if ( ! is_array( $data ) || empty( $spreadsheet_id ) || empty( $sheet_tab_id ) || empty( $range ) || empty( $integration_data ) || empty( $order_id ) ) {
 				throw new \Exception( esc_html__( 'Invalid or missing input data.', 'sa-integrations-for-google-sheets' ) );
 			}
 
@@ -216,26 +216,100 @@ if ( ! class_exists( '\SAIFGS\Integrations\WooCommerce\SAIFGS_Listener_Woo_Comme
 			}
 			try {
 				// Append the new data to Google Sheets.
-				if ( class_exists( '\SAIFGS\Classes\SAIFGS_Google_Apis_Authenticator' ) ) {
-					$client = \SAIFGS\Classes\SAIFGS_Google_Apis_Authenticator::get_instance();
-				} else {
-					$client = '';
+				// if ( class_exists( '\SAIFGS\Classes\SAIFGS_Google_Apis_Authenticator' ) ) {
+				// 	$client = \SAIFGS\Classes\SAIFGS_Google_Apis_Authenticator::get_instance();
+				// } else {
+				// 	$client = '';
+				// }
+
+				// // Request link.
+				// $url = 'https://sheets.googleapis.com/v4/spreadsheets/' . $google_work_sheet_id . '/values/' . $google_sheet_tab_id . '!A:A:append?valueInputOption=USER_ENTERED';
+
+				// // Argument Array.
+				// $args = array(
+				// 	'headers' => array(
+				// 		'Content-Type' => 'application/json',
+				// 	),
+				// 	'body'    => '{"range":"' . $google_sheet_tab_id . '!A:A", "majorDimension":"ROWS", "values":[' . wp_json_encode( array_values( $set_values ) ) . ']}',
+				// );
+
+				// $response = $client->saifgs_request( $url, $args, 'post' );
+
+
+				// =========== YEH SECTION CHANGE HOGI ===========
+				// Old code:
+				// if ( class_exists( '\SAIFGS\Classes\SAIFGS_Google_Apis_Authenticator' ) ) {
+				//     $client = \SAIFGS\Classes\SAIFGS_Google_Apis_Authenticator::get_instance();
+				// } else {
+				//     $client = '';
+				// }
+				// 
+				// // Request link.
+				// $url = 'https://sheets.googleapis.com/v4/spreadsheets/' . $spreadsheet_id . '/values/' . $sheet_tab_id . '!A:A:append?valueInputOption=USER_ENTERED';
+				// 
+				// // Argument Array.
+				// $args = array(
+				//     'headers' => array(
+				//         'Content-Type' => 'application/json',
+				//     ),
+				//     'body'    => '{"range":"' . $sheet_tab_id . '!A:A", "majorDimension":"ROWS", "values":[' . wp_json_encode( array_values( $set_values ) ) . ']}',
+				// );
+				// 
+				// $response         = $client->saifgs_request( $url, $args, 'post' );
+
+				// New code: Use the active access token
+				$access_token = $this->saifgs_get_active_access_token();
+				if ( empty( $access_token ) ) {
+					error_log( 'SAIFGS WooCommerce: No access token available for Google Sheets insertion.' );
+					return new \WP_Error( 'no_token', __( 'No valid Google access token found. Please check your Google connection.', 'sa-integrations-for-google-sheets' ), array( 'status' => 401 ) );
 				}
-
+				
 				// Request link.
-				$url = 'https://sheets.googleapis.com/v4/spreadsheets/' . $google_work_sheet_id . '/values/' . $google_sheet_tab_id . '!A:A:append?valueInputOption=USER_ENTERED';
-
+				$url = 'https://sheets.googleapis.com/v4/spreadsheets/' . $spreadsheet_id . '/values/' . $sheet_tab_id . '!A:A:append?valueInputOption=USER_ENTERED';
+				
 				// Argument Array.
 				$args = array(
 					'headers' => array(
-						'Content-Type' => 'application/json',
+						'Content-Type'  => 'application/json',
+						'Authorization' => 'Bearer ' . $access_token,
 					),
-					'body'    => '{"range":"' . $google_sheet_tab_id . '!A:A", "majorDimension":"ROWS", "values":[' . wp_json_encode( array_values( $set_values ) ) . ']}',
+					'body'    => wp_json_encode( array(
+						'range'          => $sheet_tab_id . '!A:A',
+						'majorDimension' => 'ROWS',
+						'values'         => array( $set_values ),
+					) ),
+					'timeout' => 30,
 				);
+				
+				$response = wp_remote_post( $url, $args );
+				
+				if ( is_wp_error( $response ) ) {
+					error_log( 'SAIFGS WooCommerce: Google Sheets API request failed - ' . $response->get_error_message() );
+					return new \WP_Error( 'google_api_error', $response->get_error_message(), array( 'status' => 500 ) );
+				}
+				
+				$response_code = wp_remote_retrieve_response_code( $response );
+				$body = wp_remote_retrieve_body( $response );
+				
+				if ( $response_code === 401 ) {
+					error_log( 'SAIFGS WooCommerce: Authentication failed (401) when inserting data to Google Sheets.' );
+					// If this was an OAuth token, mark it as expired
+					if ( $this->saifgs_is_oauth_token() ) {
+						update_option( 'saifgs_auto_connect_auth_expired', 'true' );
+					}
+					return new \WP_Error( 'auth_expired', __( 'Authentication expired. Please reconnect your Google account.', 'sa-integrations-for-google-sheets' ), array( 'status' => 401 ) );
+				}
+				
+				if ( $response_code !== 200 ) {
+					error_log( 'SAIFGS WooCommerce: Google Sheets API returned error code: ' . $response_code . ' - Body: ' . $body );
+					return new \WP_Error( 'google_api_error', __( 'Google Sheets API returned an error: ' . $response_code, 'sa-integrations-for-google-sheets' ), array( 'status' => $response_code ) );
+				}
+				
+				$response_data = json_decode( $body, true );
+				// =========== CHANGE END ===========
 
-				$response = $client->saifgs_request( $url, $args, 'post' );
-
-				$sheet_tab_row_id = $response['updates']['updatedRange'];
+				// $sheet_tab_row_id = $response['updates']['updatedRange'];
+				$sheet_tab_row_id = $response_data['updates']['updatedRange'];
 
 				// Insert the row mapping into the integration rows table.
 				$wpdb->insert( // phpcs:ignore WordPress.DB.DirectDatabaseQuery.DirectQuery
@@ -248,6 +322,7 @@ if ( ! class_exists( '\SAIFGS\Integrations\WooCommerce\SAIFGS_Listener_Woo_Comme
 						'source_row_id'       => $order_id,
 					)
 				);
+				error_log( 'SAIFGS WooCommerce: Successfully inserted data to Google Sheet. Row ID: ' . $sheet_tab_row_id );
 			} catch ( \Exception $e ) {
 				// translators: %s will be replaced with the error message.
 				throw new \Exception( esc_html( sprintf( __( 'Failed to insert data into Google Sheets: %s', 'sa-integrations-for-google-sheets' ), $e->getMessage() ) ) );

@@ -59,6 +59,7 @@ class ComposerStaticInitba3b852f515167f86681ae6dcfb3b17b
         'SAIFGS\\RestApi\\SAIFGS_Integration_Plugin_List_API' => __DIR__ . '/../..' . '/includes/rest-api/class-saifgs-integration-plugin-list-api.php',
         'SAIFGS\\RestApi\\SAIFGS_Integrations_API' => __DIR__ . '/../..' . '/includes/rest-api/class-saifgs-integrations-api.php',
         'SAIFGS\\RestApi\\SAIFGS_Sheetmaping_List' => __DIR__ . '/../..' . '/includes/rest-api/class-saifgs-sheetmaping-list.php',
+        'SAIFGS\\Settings\\SAIFGS_Auto_Connect_Google_Signin' => __DIR__ . '/../..' . '/includes/settings/class-saifgs-auto-connect-google-signin.php',
         'SAIFGS\\Settings\\SAIFGS_General_Settings' => __DIR__ . '/../..' . '/includes/settings/class-saifgs-general-settings.php',
         'SAIFGS\\Traits\\SAIFGS_Helpers' => __DIR__ . '/../..' . '/includes/traits/saifgs-helpers.php',
         'SAIFGS\\Traits\\SAIFGS_RestAPI' => __DIR__ . '/../..' . '/includes/traits/saifgs-rest-api.php',

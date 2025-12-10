@@ -230,16 +230,77 @@ if ( ! class_exists( '\SAIFGS\RestApi\SAIFGS_Sheetmaping_List' ) ) {
 			if ( is_array( $results ) && count( $results ) > 0 ) {
 				foreach ( $results as $plugin_index => $data ) {
 					// If passed parameter is Array and Not String  || Creating Query URL.
-					$request = 'https://sheets.googleapis.com/v4/spreadsheets/' . $data->google_work_sheet_id;
+					// $request = 'https://sheets.googleapis.com/v4/spreadsheets/' . $data->google_work_sheet_id;
 
-					if ( class_exists( '\SAIFGS\Classes\SAIFGS_Google_Apis_Authenticator' ) ) {
-						$client = \SAIFGS\Classes\SAIFGS_Google_Apis_Authenticator::get_instance();
+					// if ( class_exists( '\SAIFGS\Classes\SAIFGS_Google_Apis_Authenticator' ) ) {
+					// 	$client = \SAIFGS\Classes\SAIFGS_Google_Apis_Authenticator::get_instance();
+					// } else {
+					// 	$client = '';
+					// }
+					// $response = $client->saifgs_request( $request );
+
+					$request_url = 'https://sheets.googleapis.com/v4/spreadsheets/' . $data->google_work_sheet_id;
+
+					// =========== YEH LINE CHANGE HOGI ===========
+					// Old code:
+					// if ( class_exists( '\SAIFGS\Classes\SAIFGS_Google_Apis_Authenticator' ) ) {
+					//     $client = \SAIFGS\Classes\SAIFGS_Google_Apis_Authenticator::get_instance();
+					// } else {
+					//     $client = '';
+					// }
+					// $response = $client->saifgs_request( $request );
+					
+					// New code: Get active access token
+					$access_token = $this->saifgs_get_active_access_token();
+					if ( empty( $access_token ) ) {
+						// Agar token nahi mila, to sheet data ke bina continue karo
+						error_log( 'SAIFGS: No access token for sheet ' . $data->google_work_sheet_id . ', skipping metadata fetch.' );
+						$response = array(
+							'spreadsheetId' => $data->google_work_sheet_id,
+							'properties' => array( 'title' => 'Unknown' ),
+							'sheets' => array()
+						);
 					} else {
-						$client = '';
+						// Token mila, API call karo
+						$api_response = wp_remote_get( $request_url, array(
+							'headers' => array(
+								'Authorization' => 'Bearer ' . $access_token,
+							),
+							'timeout' => 15,
+						) );
+						
+						if ( is_wp_error( $api_response ) ) {
+							error_log( 'SAIFGS: Failed to fetch sheet metadata - ' . $api_response->get_error_message() );
+							$response = array(
+								'spreadsheetId' => $data->google_work_sheet_id,
+								'properties' => array( 'title' => 'Error Fetching' ),
+								'sheets' => array()
+							);
+						} else {
+							$response_code = wp_remote_retrieve_response_code( $api_response );
+							$body = wp_remote_retrieve_body( $api_response );
+							
+							if ( $response_code === 200 ) {
+								$response = json_decode( $body, true );
+							} else {
+								error_log( 'SAIFGS: Failed to fetch sheet metadata, code: ' . $response_code );
+								$response = array(
+									'spreadsheetId' => $data->google_work_sheet_id,
+									'properties' => array( 'title' => 'Fetch Error' ),
+									'sheets' => array()
+								);
+							}
+						}
 					}
-					$response = $client->saifgs_request( $request );
-					wp_cache_set( $sheet_cache_key, $sheets_data, $cache_group, 15 * MINUTE_IN_SECONDS );
-					$sheets = $response['sheets'];
+					// =========== CHANGE END ===========
+
+					// Cache handling - isko bhi update karna hoga
+					$sheet_cache_key = 'saifgs_sheet_' . md5( $data->google_work_sheet_id . '_' . $access_token );
+					// Note: Cache ko token ke saath link karna important hai kyunki alag users ke alag sheets ho sakte hain
+					// wp_cache_set( $sheet_cache_key, $sheets_data, $cache_group, 15 * MINUTE_IN_SECONDS );
+					wp_cache_set( $sheet_cache_key, $response, $cache_group, 15 * MINUTE_IN_SECONDS );
+					// $sheets = $response['sheets'];
+					$sheets = isset( $response['sheets'] ) ? $response['sheets'] : array();
 
 					if ( 'wpforms' === $data->plugin_id ) {
 						$posts = wpforms()->form->get();
@@ -349,14 +410,28 @@ if ( ! class_exists( '\SAIFGS\RestApi\SAIFGS_Sheetmaping_List' ) ) {
 						$filed[ $plugin_index ]['google_sheets_url'] = $google_sheets_url;
 					}
 
-					if ( $response['spreadsheetId'] === $data->google_work_sheet_id ) {
+					// if ( $response['spreadsheetId'] === $data->google_work_sheet_id ) {
+					// 	$filed[ $plugin_index ]['google_work_sheet_id'] = sanitize_text_field( $response['properties']['title'] );
+					// }
+
+					if ( isset( $response['spreadsheetId'] ) && $response['spreadsheetId'] === $data->google_work_sheet_id ) {
 						$filed[ $plugin_index ]['google_work_sheet_id'] = sanitize_text_field( $response['properties']['title'] );
+					} else {
+						$filed[ $plugin_index ]['google_work_sheet_id'] = 'Unknown Sheet';
 					}
 
 					foreach ( $sheets as $sheet ) {
 						if ( $sheet['properties']['title'] === $data->google_sheet_tab_id ) {
 							$filed[ $plugin_index ]['google_sheet_tab_id'] = sanitize_text_field( $sheet['properties']['title'] );
 						}
+					}
+
+					// Ensure these keys exist even if not set
+					if ( ! isset( $filed[ $plugin_index ]['google_sheet_tab_id'] ) ) {
+						$filed[ $plugin_index ]['google_sheet_tab_id'] = $data->google_sheet_tab_id;
+					}
+					if ( ! isset( $filed[ $plugin_index ]['google_sheets_url'] ) ) {
+						$filed[ $plugin_index ]['google_sheets_url'] = '';
 					}
 				}
 			}
@@ -377,5 +452,50 @@ if ( ! class_exists( '\SAIFGS\RestApi\SAIFGS_Sheetmaping_List' ) ) {
 
 			wp_send_json( array( 'new_response' => $new_responses ) );
 		}
+
+		// /**
+		//  * Determines the correct active access token to use.
+		//  * Priority: 1. Valid User OAuth Token, 2. Service Account Token.
+		//  *
+		//  * @return string|null The access token, or null if none found/valid.
+		//  */
+		// private function saifgs_get_active_access_token() {
+		// 	// 1. Check for a valid OAuth token from the auto-connect system
+		// 	$oauth_token = get_option( 'saifgs_auto_connect_token' );
+		// 	$oauth_expired = get_option( 'saifgs_auto_connect_auth_expired', 'false' );
+
+		// 	if ( ! empty( $oauth_token ) && $oauth_expired === 'false' ) {
+		// 		// Optional: Perform a lightweight validation (e.g., check expiry time)
+		// 		$expiry_time = get_option( 'saifgs_auto_connect_token_expiry', 0 );
+		// 		if ( $expiry_time > ( time() + 300 ) ) { // 5-minute buffer
+		// 			error_log( 'SAIFGS: Using valid OAuth access token for integration list.' );
+		// 			return $oauth_token;
+		// 		} else {
+		// 			error_log( 'SAIFGS: OAuth token appears expired. Marking as expired.' );
+		// 			update_option( 'saifgs_auto_connect_auth_expired', 'true' );
+		// 		}
+		// 	}
+
+		// 	// 2. Fall back to the Service Account token
+		// 	error_log( 'SAIFGS: Falling back to Service Account token for integration list.' );
+		// 	if ( class_exists( '\SAIFGS\Classes\SAIFGS_Google_Apis_Authenticator' ) ) {
+		// 		$client = \SAIFGS\Classes\SAIFGS_Google_Apis_Authenticator::get_instance();
+		// 		return $client->saifgs_get_access_token(); // This generates/fetches the service account token
+		// 	}
+
+		// 	error_log( 'SAIFGS: No access token available for integration list.' );
+		// 	return null;
+		// }
+
+		// /**
+		//  * Utility function to check if the currently used token is from OAuth.
+		//  * (Simplistic check based on the source option).
+		//  *
+		//  * @return bool
+		//  */
+		// private function saifgs_is_oauth_token() {
+		// 	$token = get_option( 'saifgs_auto_connect_token' );
+		// 	return ! empty( $token );
+		// }
 	}
 }
