@@ -17,36 +17,41 @@ import '../../styles/form.scss';
 
 const EditIntegration = ( { record, onReturnMessage } ) => {
 	const [ formRef ] = ProForm.useForm();
-	const [ integrationMapSourceData, setintegrationMapSourceData ] =
-		useState( null );
 	const [ isApiProcessing, setIsApiProcessing ] = useState( false );
 	//  Set plugin form by plugin list
 	const [ selectedPluginID, setSelectedPluginID ] = useState( '' );
-
-	const [ pluginSelectedFormFiled, setPluginSelectedFormFiled ] = useState(
-		[]
-	);
+	const [ pluginSelectedFormFiled, setPluginSelectedFormFiled ] = useState( [] );
+	
+	// set plugin form fields
+	const [ selectedSourceIntityID, setSelectedSourceIntityID ] = useState( '' );
+	const [ selectedOrderStatus, setSelectedOrderStatus ] = useState( '' );
+	const [ Pluginformfields, setpluginformfields ] = useState( '' );
+	
+	// Set google sheet tab by google sheet
 	const [ selectedGoogleSheet, setSelectedGoogleSheet ] = useState( '' );
 	const [ googleSheetTabList, setGoogleSheetTabList ] = useState( [] );
-	const [ selectedGoogleSheetTab, setSelectedGoogleSheetTab ] =
-		useState( '' );
-
-	const [ Pluginformfields, setpluginformfields ] = useState( '' );
+	
+	// set googgle sheet coulmn by google sheet tab
+	const [ selectedGoogleSheetTab, setSelectedGoogleSheetTab ] = useState( '' );
+	
+	
+	const [ integrationMapSourceData, setintegrationMapSourceData ] = useState( null );
 	const [ editableKeys, setEditableRowKeys ] = useState( null );
-	const [ selectedSourceIntityID, setSelectedSourceIntityID ] =
-		useState( '' );
-	const [ selectedOrderStatus, setSelectedOrderStatus ] = useState( '' );
+	const [ mapping, setMapping ] = useState( false );
+
 	const [ isUrlRemoved, setisUrlRemoved ] = useState( false );
 	const [ editFormID, setEditFormID ] = useState( [] );
 	const [ FormID, setFormID ] = useState( record );
+
 	// getting map Fields data.
 	const [ sourceFieldsData, setSourceFieldsData ] = useState( '' );
 	const [ googleFieldsData, setGoogleFieldsData ] = useState( '' );
-	const [ mapping, setMapping ] = useState( false );
-	const [ isMappingFieldsChanged, setIsMappingFieldsChanged ] =
-		useState( false );
-	const [ editableProTableValueChange, setEditableProTableValueChange ] =
-		useState( false );
+	const [ isMappingFieldsChanged, setIsMappingFieldsChanged ] = useState( false );
+	const [ editableProTableValueChange, setEditableProTableValueChange ] = useState( false );
+
+
+	// Add token validity state
+	const [ isTokenValid, setIsTokenValid ] = useState( true );
 
 	const customLocale = {
 		emptyText: __(
@@ -74,6 +79,47 @@ const EditIntegration = ( { record, onReturnMessage } ) => {
 	};
 
 	message.config( { top: 100 } );
+
+	// Token check and refresh function
+	const checkTokenAndRefresh = async () => {
+		try {
+			// First check if token is valid
+			const tokenStatus = await apiFetch({
+				path: '/saifgs/v1/check-token-status/',
+				method: 'GET',
+			});
+			
+			console.log('Token status response:', tokenStatus);
+			
+			// If not connected via OAuth (Client ID/Secret), return true
+			if (!tokenStatus.is_oauth_connection) {
+				console.log('Not connected via OAuth. Skipping token refresh.');
+				setIsTokenValid(true);
+				return true;
+			}
+
+			if (tokenStatus.requires_refresh && tokenStatus.is_oauth_connection) {
+				// Automatically refresh token
+				const refreshResponse = await apiFetch({
+					path: '/saifgs/v1/refresh-client-token/',
+					method: 'POST',
+				});
+				
+				if (!refreshResponse.success) {
+					setIsTokenValid(false);
+					message.error(__('Session expired. Please reconnect to Google.', 'sa-integrations-for-google-sheets'));
+					return false;
+				}
+				setIsTokenValid(true);
+			}
+			return true;
+		} catch (error) {
+			console.error('Token check failed:', error);
+			setIsTokenValid(false);
+			return false;
+		}
+	};
+
 	// Get Form Fileds from API
 	const getSourceFields = async (
 		selectedPluginID,
@@ -83,6 +129,11 @@ const EditIntegration = ( { record, onReturnMessage } ) => {
 		if ( selectedPluginID == '' || selectedSourceIntityID == '' ) {
 			return;
 		}
+
+		// Check token before API call
+		const tokenValid = await checkTokenAndRefresh();
+		if (!tokenValid) return;
+
 		return await apiFetch( {
 			path: '/saifgs/v1/plugins-form-field-data/',
 			method: 'POST',
@@ -104,6 +155,11 @@ const EditIntegration = ( { record, onReturnMessage } ) => {
 		if ( selectedGoogleSheet == '' || selectedGoogleSheetTab == '' ) {
 			return;
 		}
+
+		// Check token before API call
+		const tokenValid = await checkTokenAndRefresh();
+		if (!tokenValid) return;
+
 		return await apiFetch( {
 			path: '/saifgs/v1/google-sheet-tab/',
 			method: 'POST',
@@ -117,22 +173,35 @@ const EditIntegration = ( { record, onReturnMessage } ) => {
 		} );
 	};
 
+
+	// Initial token check on component mount
+	useEffect( () => {
+		const initializeToken = async () => {
+			await checkTokenAndRefresh();
+		};
+		initializeToken();
+	}, [] );
+
 	// Getting plugin list
 	useEffect( () => {
 		if ( selectedPluginID == '' ) {
 			return;
 		}
-		try {
-			apiFetch( {
-				path: '/saifgs/v1/plugins-form-data/',
-				method: 'POST',
-				body: JSON.stringify( { pluginName: selectedPluginID } ),
-			} ).then( ( response ) => {
-				setPluginSelectedFormFiled( response );
-			} );
-		} catch ( error ) {
-			console.error( 'Error fetching plugin data:', error );
-		}
+		// Check token before API call
+		checkTokenAndRefresh().then(tokenValid => {
+			if (!tokenValid) return;
+			try {
+				apiFetch( {
+					path: '/saifgs/v1/plugins-form-data/',
+					method: 'POST',
+					body: JSON.stringify( { pluginName: selectedPluginID } ),
+				} ).then( ( response ) => {
+					setPluginSelectedFormFiled( response );
+				} );
+			} catch ( error ) {
+				console.error( 'Error fetching plugin data:', error );
+			}
+		});
 	}, [ selectedPluginID ] );
 
 	// Getting google sheet tab
@@ -140,23 +209,36 @@ const EditIntegration = ( { record, onReturnMessage } ) => {
 		if ( selectedGoogleSheet == '' ) {
 			return;
 		}
-		try {
-			apiFetch( {
-				path: '/saifgs/v1/google-drive-sheets/',
-				method: 'POST',
-				body: JSON.stringify( {
-					google_sheet_data: selectedGoogleSheet,
-				} ),
-			} ).then( ( response ) => {
-				setGoogleSheetTabList( response );
-			} );
-		} catch ( error ) {
-			console.error( 'Error fetching google-drive-sheets:', error );
-		}
+
+		// Check token before API call
+		checkTokenAndRefresh().then(tokenValid => {
+			if (!tokenValid) return;
+			try {
+				apiFetch( {
+					path: '/saifgs/v1/google-drive-sheets/',
+					method: 'POST',
+					body: JSON.stringify( {
+						google_sheet_data: selectedGoogleSheet,
+					} ),
+				} ).then( ( response ) => {
+					setGoogleSheetTabList( response );
+				} );
+			} catch ( error ) {
+				console.error( 'Error fetching google-drive-sheets:', error );
+			}
+		});
 	}, [ selectedGoogleSheet ] );
 
 	// Saving data in to database
 	const handleClick = async ( formData ) => {
+
+		// Check token before saving
+		const tokenValid = await checkTokenAndRefresh();
+		if (!tokenValid) {
+			message.error(__('Cannot save integration. Google session is expired.', 'sa-integrations-for-google-sheets'));
+			return;
+		}
+
 		if ( mapping == true ) {
 			if ( editableKeys.length > 0 ) {
 				apiFetch( {
@@ -199,6 +281,14 @@ const EditIntegration = ( { record, onReturnMessage } ) => {
 		google_sheet_tab_id = selectedGoogleSheetTab,
 		order_status = selectedOrderStatus
 	) => {
+
+		// Check token first
+		const tokenValid = await checkTokenAndRefresh();
+		if (!tokenValid) {
+			message.error(__('Cannot generate mapping. Google session is expired.', 'sa-integrations-for-google-sheets'));
+			return;
+		}
+
 		setMapping( false );
 		if ( plugin_id == '' ) {
 			message.error(
@@ -246,11 +336,19 @@ const EditIntegration = ( { record, onReturnMessage } ) => {
 			google_work_sheet_id,
 			google_sheet_tab_id
 		);
+
+		// If token check failed in getGoogleFields, return early
+		if (!googleFieldsResponse) return;
+
 		const pluginFormFieldsResponse = await getSourceFields(
 			plugin_id,
 			source_id,
 			order_status
 		);
+
+		// If token check failed in getSourceFields, return early
+		if (!pluginFormFieldsResponse) return;
+
 		const NewIntegrationMapSourceData = await googleFieldsResponse.map(
 			( googleSheetCoulmn, index ) => {
 				return {
@@ -303,6 +401,10 @@ const EditIntegration = ( { record, onReturnMessage } ) => {
 						),
 					},
 					resetButtonProps: {},
+					// Disable save button if token is invalid
+					submitButtonProps: {
+						disabled: !isTokenValid,
+					},
 				} }
 				onFinish={ async ( values ) => {
 					values.formid = FormID;

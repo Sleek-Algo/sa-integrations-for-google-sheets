@@ -9,6 +9,8 @@ import SpreadsheetSetting from './TabContent/SpreadsheetSetting';
 import SupportedPlugins from './TabContent/SupportedPlugins';
 import SheetMapping from './TabContent/SheetMapping';
 import { __ } from '@wordpress/i18n';
+import AllConnectionSettings from './TabContent/AllConnectionSettings';
+
 const NavTabs = () => {
 	// States
 	const [ disabledTab, setDisabledTab ] = useState( false );
@@ -50,6 +52,19 @@ const NavTabs = () => {
 					setActiveTab( key );
 				} }
 				items={ [
+					// {
+					// 	key: '1',
+					// 	label: __(
+					// 		'Google Account Settings',
+					// 		'sa-integrations-for-google-sheets'
+					// 	),
+					// 	icon: <SettingOutlined />,
+					// 	children: (
+					// 		<SpreadsheetSetting
+					// 			navVisibility={ handleTabVisibility }
+					// 		/>
+					// 	),
+					// },
 					{
 						key: '1',
 						label: __(
@@ -58,7 +73,10 @@ const NavTabs = () => {
 						),
 						icon: <SettingOutlined />,
 						children: (
-							<SpreadsheetSetting
+							// <SpreadsheetSetting
+							// 	navVisibility={ handleTabVisibility }
+							// />
+							<AllConnectionSettings
 								navVisibility={ handleTabVisibility }
 							/>
 						),

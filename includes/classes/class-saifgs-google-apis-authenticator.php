@@ -196,5 +196,54 @@ if ( ! class_exists( '\SAIFGS\Classes\SAIFGS_Google_Apis_Authenticator' ) ) {
 			}
 			return json_decode( wp_remote_retrieve_body( $response ), true );
 		}
+
+		/**
+		 * Get active access token (supports all methods)
+		 */
+		public function saifgs_get_active_access_token() {
+			error_log('SAIFGS AUTHENTICATOR: Getting active access token');
+			
+			// Priority 1: Client Credentials OAuth token
+			$client_credentials_token = get_option( 'saifgs_client_credentials_access_token' );
+			$client_credentials_expiry = get_option( 'saifgs_client_credentials_token_expiry' );
+			
+			error_log('SAIFGS AUTHENTICATOR: Client credentials token exists: ' . (!empty($client_credentials_token) ? 'YES' : 'NO'));
+			error_log('SAIFGS AUTHENTICATOR: Client credentials expiry: ' . ($client_credentials_expiry ? date('Y-m-d H:i:s', $client_credentials_expiry) : 'NOT SET'));
+			error_log('SAIFGS AUTHENTICATOR: Current time: ' . date('Y-m-d H:i:s', time()));
+			
+			if ( ! empty( $client_credentials_token ) && $client_credentials_expiry > time() ) {
+				error_log( 'SAIFGS AUTHENTICATOR: Using client credentials OAuth token' );
+				return $client_credentials_token;
+			} else {
+				error_log('SAIFGS AUTHENTICATOR: Client credentials token expired or not available');
+			}
+			
+			// Priority 2: Auto Connect OAuth token
+			$auto_connect_token = get_option( 'saifgs_auto_connect_token' );
+			$auto_connect_expired = get_option( 'saifgs_auto_connect_auth_expired', 'false' );
+			
+			error_log('SAIFGS AUTHENTICATOR: Auto connect token exists: ' . (!empty($auto_connect_token) ? 'YES' : 'NO'));
+			error_log('SAIFGS AUTHENTICATOR: Auto connect expired status: ' . $auto_connect_expired);
+			
+			if ( ! empty( $auto_connect_token ) && $auto_connect_expired === 'false' ) {
+				$expiry_time = get_option( 'saifgs_auto_connect_token_expiry', 0 );
+				error_log('SAIFGS AUTHENTICATOR: Auto connect token expiry: ' . ($expiry_time ? date('Y-m-d H:i:s', $expiry_time) : 'NOT SET'));
+				
+				if ( $expiry_time > ( time() + 300 ) ) {
+					error_log( 'SAIFGS AUTHENTICATOR: Using auto connect OAuth token' );
+					return $auto_connect_token;
+				} else {
+					error_log('SAIFGS AUTHENTICATOR: Auto connect token expired');
+				}
+			}
+			
+			// // Priority 3: Service Account token
+			// error_log( 'SAIFGS AUTHENTICATOR: Falling back to Service Account token' );
+			// return $this->saifgs_get_access_token(); // Your existing method
+
+			// If no valid OAuth token is available, return null
+			error_log('SAIFGS AUTHENTICATOR: No valid OAuth token available.');
+			return null;
+		}
 	}
 }
