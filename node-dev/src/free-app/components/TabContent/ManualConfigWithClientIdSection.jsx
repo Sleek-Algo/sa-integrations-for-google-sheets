@@ -255,12 +255,7 @@ const ManualConfigWithClientIdSection = () => {
           // initialValues={{
           //   client_id: storedCredentials?.client_id || '',
           //   client_secret: ''
-          // }}
-          // initialValues={{
-          //   client_id: "140792726777-p86v9pusdpi8mqfrlar06qfcmiqoa9en.apps.googleusercontent.com",
-          //   client_secret: "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"
-          // }}
-        
+          // }}        
         >
           <ProFormText.Password
             label={__('Client ID', 'sa-integrations-for-google-sheets')}
